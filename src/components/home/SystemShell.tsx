@@ -19,13 +19,6 @@ export default function SystemShell({ children }: { children: React.ReactNode })
         </div>
       </header>
 
-      {/* HUD: Right Sidebar (The Stack Log) */}
-      <aside className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col gap-8 text-[10px] text-white/20 vertical-text border-r border-white/5 pr-4">
-        <span>MERN_STACK</span>
-        <span>GOLANG_BACKEND</span>
-        <span>AWS_INFRA</span>
-        <span>DOCKER_CONTAINERIZED</span>
-      </aside>
 
       <main className="pt-16">{children}</main>
 
