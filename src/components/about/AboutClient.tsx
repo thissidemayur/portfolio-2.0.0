@@ -14,7 +14,7 @@ import { academicMilestones, techStack } from "@/lib/constant";
 
 export default function AboutClient() {
   return (
-    <div className="max-w-6xl mx-auto pt-32 pb-24 px-6 selection:bg-blue-500/30">
+    <div className="max-w-6xl mx-auto pt-8 pb-24 px-6 selection:bg-blue-500/30">
       {/* SECTION 1: IDENTITY */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-40 items-center">
         <header className="lg:col-span-7 space-y-8 order-2 lg:order-1">
