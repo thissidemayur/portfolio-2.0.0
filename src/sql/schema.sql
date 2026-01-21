@@ -44,6 +44,8 @@ CREATE TABLE IF NOT EXISTS projects(
     key_learnings TEXT[] NOT NULL,
     challenges_faced TEXT[] NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP
+
 );
 
 
@@ -76,6 +78,7 @@ CREATE TABLE IF NOT EXISTS blogs(
     category blog_type NOT NULL,
     is_featured BOOLEAN DEFAULT false,
     published_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS resumes(
