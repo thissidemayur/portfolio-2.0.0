@@ -1,48 +1,110 @@
 import { Metadata } from "next";
 import ContactForm from "@/components/contact/contactform";
-import { MapPin, Clock, Github, Linkedin, Mail } from "lucide-react";
-
-
-
+import { MapPin, Clock, Github, Linkedin, Mail, ArrowLeft } from "lucide-react";
  import { Instagram, Twitter } from "lucide-react";
+import Link from "next/link";
 
-const SOCIAL_LINKS = [
-  {
-    label: "GitHub",
-    icon: <Github size={18} />,
-    href: "https://github.com/thissidemayur",
-    color: "#fff",
+ const SOCIAL_LINKS = [
+   {
+     label: "GitHub",
+     icon: <Github size={18} />,
+     href: "https://github.com/thissidemayur",
+     color: "#fff",
+   },
+   {
+     label: "LinkedIn",
+     icon: <Linkedin size={18} />,
+     href: "https://linkedin.com/in/thissidemayur",
+     color: "#0077B5",
+   },
+   {
+     label: "X (Twitter)",
+     icon: <Twitter size={18} />, // Lucide uses Twitter icon for X
+     href: "https://x.com/thissidemayur",
+     color: "#1DA1F2", // Classic Twitter Blue or use #fff for a modern X look
+   },
+   {
+     label: "Instagram",
+     icon: <Instagram size={18} />,
+     href: "https://instagram.com/thissidemayur",
+     color: "#E4405F",
+   },
+   {
+     label: "Email",
+     icon: <Mail size={18} />,
+     href: "mailto:thissidemayur@gmail.com",
+     color: "#EA4335",
+   },
+ ];
+
+export const metadata: Metadata = {
+  title: "Contact Mayur Pal | Full-Stack & DevOps",
+  description:
+    "Get in touch for internships, projects, or technical collaboration.",
+  alternates: {
+    canonical: "https://thissidemayur.me/contact",
   },
-  {
-    label: "LinkedIn",
-    icon: <Linkedin size={18} />,
-    href: "https://linkedin.com/in/thissidemayur",
-    color: "#0077B5",
-  },
-  {
-    label: "X (Twitter)",
-    icon: <Twitter size={18} />, // Lucide uses Twitter icon for X
-    href: "https://x.com/thissidemayur",
-    color: "#1DA1F2", // Classic Twitter Blue or use #fff for a modern X look
-  },
-  {
-    label: "Instagram",
-    icon: <Instagram size={18} />,
-    href: "https://instagram.com/thissidemayur",
-    color: "#E4405F",
-  },
-  {
-    label: "Email",
-    icon: <Mail size={18} />,
-    href: "mailto:thissidemayur@gmail.com",
-    color: "#EA4335",
-  },
-];
+};
 
 export default function ContactPage() {
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": "https://thissidemayur.me/contact/#webpage",
+        url: "https://thissidemayur.me/contact",
+        name: "Contact Mayur Pal",
+        description:
+          "Contact information for Mayur Pal, including email and social media for professional inquiries.",
+        isPartOf: { "@id": "https://thissidemayur.me/#website" },
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://thissidemayur.me",
+            },
+            { "@type": "ListItem", position: 2, name: "Contact" },
+          ],
+        },
+        mainEntity: { "@id": "https://thissidemayur.me/#person" },
+      },
+      {
+        "@type": "Person",
+        "@id": "https://thissidemayur.me/#person",
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "Professional Inquiries",
+          email: "thissidemayur@gmail.com", 
+          url: "https://thissidemayur.me/contact",
+          availableLanguage: ["English", "Hindi","Punjabi","Bhojpuri"],
+        },
+      },
+    ],
+  };
+
   return (
-    <main className="min-h-screen bg-[#050505] text-white pt-8 pb-24 px-6 selection:bg-emerald-500/30">
+    <main className="min-h-screen bg-[#050505] text-white py-8 pb-24 px-6 selection:bg-emerald-500/30">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
       <div className="max-w-7xl mx-auto">
+        <nav className="mb-12">
+          <Link
+            href="/"
+            className="group flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[10px] font-mono tracking-widest uppercase"
+          >
+            <ArrowLeft
+              size={14}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            Back
+          </Link>
+        </nav>
         {/* HEADER: Clean & Human-Friendly */}
         <header className="mb-16 border-b border-white/5 pb-12 flex flex-col md:flex-row justify-between items-end gap-8">
           <div className="space-y-4">
