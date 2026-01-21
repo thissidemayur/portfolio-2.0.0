@@ -144,3 +144,16 @@ export const createProject = async(details:Omit<iProject,'id'|'created_at'>,tech
     }
 
 }
+
+
+export const getProjectById = async (id: number) => {
+  const sql = `
+    SELECT p.*, ARRAY_AGG(pt.technology_id) as tech_ids
+    FROM projects p
+    LEFT JOIN project_technologies pt ON p.id = pt.project_id
+    WHERE p.id = $1
+    GROUP BY p.id
+  `;
+  const { rows } = await query(sql, [id]);
+  return rows[0] || null;
+};
