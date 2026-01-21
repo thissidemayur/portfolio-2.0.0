@@ -76,3 +76,33 @@ export async function deleteCertificate(id: number) {
     throw new Error("Failed to delete certificate");
   }
 }
+
+
+export async function updateCertificate(id: number, data: Partial<Omit<iCertificate, 'id'>>) {
+  try {
+    const fieldsToUpdate = {
+      ...data,
+      updated_at: new Date().toISOString()
+    };
+
+    const keys = Object.keys(fieldsToUpdate);
+    if (keys.length === 0) return null;
+
+    const setClause = keys.map((k, i) => `${k} = $${i + 1}`).join(", ");
+    const sql = `UPDATE certificates SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+    
+    const result = await query(sql, [...Object.values(fieldsToUpdate), id]);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error updating certificate:", error);
+    throw new Error("Failed to update certificate");
+  }
+}
+
+
+export async function getCertificateById(id: number): Promise<iCertificate | null> {
+  const sql = "SELECT * FROM certificates WHERE id = $1";
+  const { rows } = await query(sql, [id]);
+  return rows[0] || null;
+}
+
