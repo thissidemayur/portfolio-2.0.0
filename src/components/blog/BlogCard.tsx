@@ -1,51 +1,66 @@
 "use client";
 import { motion } from "framer-motion";
-import { ShieldCheck, Clock, ArrowUpRight } from "lucide-react";
+import { ShieldCheck, Clock, ArrowUpRight, Zap, BookOpen } from "lucide-react";
 import Link from "next/link";
+import { iBlog } from "@/types/database"; // Use your actual interface
 
-export default function BlogCard({ post, idx }: { post: any; idx: number }) {
+export default function BlogCard({ post, idx }: { post: iBlog; idx: number }) {
+  const isTech = post.category === "TECHNICAL";
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: idx * 0.1 }}
-      whileHover={{ y: -10 }}
-      className={`group p-8 bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] flex flex-col transition-all duration-500 hover:border-emerald-500/30 ${
-        post.isFeatured
-          ? "md:col-span-2 lg:col-span-2 bg-emerald-500/[0.02]"
-          : ""
+      whileHover={{ y: -8 }}
+      className={`group p-8 bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] flex flex-col transition-all duration-500 hover:border-blue-500/30 ${
+        post.is_featured ? "md:col-span-2 bg-blue-500/[0.01]" : ""
       }`}
     >
       <header className="flex justify-between items-start mb-8">
-        <span className="px-3 py-1 bg-white/5 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-widest border border-white/10">
-          {post.category}
+        <span
+          className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
+            isTech
+              ? "bg-blue-500/10 text-blue-500 border-blue-500/20"
+              : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+          }`}
+        >
+          {isTech ? (
+            <Zap size={10} className="inline mr-1" />
+          ) : (
+            <BookOpen size={10} className="inline mr-1" />
+          )}
+          {post.category.replace("_", " ")}
         </span>
-        <div className="flex items-center gap-2 text-[10px] text-emerald-500 font-mono font-black uppercase">
-          <ShieldCheck size={14} />
-          {post.verifiedBy}
+
+        <div className="flex items-center gap-2 text-[9px] text-white/20 font-mono uppercase">
+          <ShieldCheck size={12} className="text-blue-500" />
+          Verified_Log
         </div>
       </header>
 
-      <Link href={`/blogs/${post.slug || "#"}`}>
+      <Link href={`/blogs/${post.slug}`}>
         <h2
-          className={`${post.isFeatured ? "text-3xl md:text-4xl" : "text-xl"} font-bold text-white mb-4 leading-tight group-hover:text-emerald-400 transition-colors`}
+          className={`${post.is_featured ? "text-3xl md:text-5xl" : "text-2xl"} font-black text-white mb-4 leading-tight group-hover:text-blue-400 transition-colors italic uppercase tracking-tighter`}
         >
           {post.title}
         </h2>
       </Link>
 
-      <p className="text-gray-400 text-sm mb-12 line-clamp-3 leading-relaxed">
-        {post.excerpt}
+      <p className="text-gray-500 text-sm mb-12 line-clamp-3 leading-relaxed font-medium">
+        {post.summary}
       </p>
 
       <footer className="mt-auto flex items-center justify-between pt-6 border-t border-white/5">
-        <div className="flex items-center gap-4 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
+        <div className="flex items-center gap-4 text-white/30 text-[10px] font-bold uppercase tracking-widest">
           <span className="flex items-center gap-1.5">
-            <Clock size={12} /> {post.readTime}
+            <Clock size={12} /> 5 min read
           </span>
-          <time dateTime={post.date}>{post.date}</time>
+          <time dateTime={new Date(post.published_at).toISOString()}>
+            {new Date(post.published_at).toLocaleDateString()}
+          </time>
         </div>
-        <div className="p-3 bg-white/5 rounded-full group-hover:bg-emerald-500 group-hover:text-black transition-all">
+        <div className="p-3 bg-white/5 rounded-full group-hover:bg-blue-500 group-hover:text-white transition-all">
           <ArrowUpRight size={18} />
         </div>
       </footer>
