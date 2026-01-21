@@ -5,7 +5,6 @@ import { ArrowLeft } from "lucide-react";
 
 import ProjectHero from "@/components/projects/ProjectHero";
 import TechnicalSpecs from "@/components/projects/TechnicalSpecs";
-import DeploymentLog from "@/components/projects/DeploymentLog";
 import { getProjectByItSlug } from "@/dal/projects.dal";
 import { iProject } from "@/types/database";
 import { ProjectStory } from "@/components/projects/ProjectStory";
@@ -105,7 +104,6 @@ const projectSchema = {
           <ProjectHero project={project} />
           <ProjectStory project={project} />
           <TechnicalSpecs project={project} />
-          <DeploymentLog />
         </div>
       </div>
     </main>
