@@ -8,6 +8,7 @@ export type iBlog = {
   summary: string;
   image_url: string;
   is_featured: boolean;
+  updated_at?: Date;
 };
 export type BlogType = "TECHNICAL" | "NON_TECHNICAL";
 
@@ -16,38 +17,39 @@ export type IMsg = {
   email: string;
   subject: string;
   message: string;
+  id: number;
+  is_read: boolean;
+  received_at: Date;
 };
-
 
 export type iProject = {
-    id: number;
-    title: string;
-    content: string;
-    summary: string;
-    image_url: string;
-    live_url?: string;
-    repo_url: string;
-    slug: string;
-    is_featured: boolean;
-    problem_statement: string;
-    solution_approach: string;
-    key_learnings: string[];
-    challenges_faced: string[];
-    created_at: Date;
-    tech_stack: string[];
+  id: number;
+  title: string;
+  content: string;
+  summary: string;
+  image_url: string;
+  live_url?: string;
+  repo_url: string;
+  slug: string;
+  is_featured: boolean;
+  problem_statement: string;
+  solution_approach: string;
+  key_learnings: string[];
+  challenges_faced: string[];
+  created_at: Date;
+  updated_at: Date;
+  tech_stack: string[];
 };
-
 
 export type iResume = {
   id: number;
   version_name: string;
-  focus_area: ResumeType
+  focus_area: ResumeType;
   file_url: string;
   is_latest: boolean;
   created_at: string;
 };
 export type ResumeType = "fullstack" | "backend" | "devops";
-
 
 export type iTech = {
   id: number;
@@ -65,3 +67,16 @@ export type TechCategory =
   | "tools"
   | "other";
 
+export interface iCertificate {
+  id: number;
+  title: string;
+  issuer: string;
+  issue_date: Date | string; 
+  expiry_date?: Date | string | null; 
+  image_url: string; 
+  verify_link?: string | null; // Link to Credly/Coursera verification
+  slug: string; 
+  credential_url?: string | null; // Direct link to the PDF/Badge
+  is_industry_standard: boolean; 
+  show_on_home: boolean; 
+}
