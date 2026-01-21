@@ -6,15 +6,29 @@ import {
   CheckCircle2,
   ChevronRight,
   GraduationCap,
+  ArrowLeft,
 } from "lucide-react";
 import ServiceMatrix from "@/components/about/ServiceMatrix";
 import { academicMilestones, techStack } from "@/lib/constant";
+import Link from "next/link";
 
 
 
 export default function AboutClient() {
   return (
     <div className="max-w-6xl mx-auto pt-8 pb-24 px-6 selection:bg-blue-500/30">
+      <nav className="mb-2">
+        <Link
+          href="/"
+          className="group flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[10px] font-mono tracking-widest uppercase"
+        >
+          <ArrowLeft
+            size={14}
+            className="group-hover:-translate-x-1 transition-transform"
+          />
+          Back
+        </Link>
+      </nav>
       {/* SECTION 1: IDENTITY */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-40 items-center">
         <header className="lg:col-span-7 space-y-8 order-2 lg:order-1">
