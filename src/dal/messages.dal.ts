@@ -20,15 +20,20 @@ export async function markMessageRead(id:number){
     return rows[0] 
 }
 
-// save a message
-export async function saveContactMessage({name,email,subject,message}:IMsg){
-    const sql = `
+
+export async function saveContactMessage({
+  name,
+  email,
+  subject,
+  message,
+}: Omit<IMsg, "id" | "is_read" | "received_at">) {
+  const sql = `
         INSERT INTO contact_messages (name,email,subject,message) 
         VALUES ($1,$2,$3,$4)
-    `
-    const values = [name,email,subject,message];
-    const {rows} = await query(sql,values)
-    return rows[0]
+    `;
+  const values = [name, email, subject, message];
+  const { rows } = await query(sql, values);
+  return rows[0];
 }
 
 // delete a message 
