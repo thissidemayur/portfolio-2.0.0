@@ -27,7 +27,7 @@ export const getBlogBySlug = async (slug: string) => {
 };
 
 // add a new blog
-export const addNewBlog = async (blog: Omit<iBlog, "id" | "published_at">) => {
+export const addNewBlog = async (blog: Omit<iBlog, "id" | "published_at" | "created_at">) => {
   const sql = `
         INSERT INTO blogs (title, content, summary, image_url, slug, category, is_featured)
         values ($1,$2,$3,$4,$5,$6,$7)
@@ -65,7 +65,7 @@ export const updateBlog = async (
   if (keys.length === 0) return null;
 
   // construct set clause dynamically
-  const setClause = keys.map((key, indx) => `${key} = ${indx + 1}`);
+  const setClause = keys.map((key, indx) => `${key} = $${indx + 1}`);
 
   // last placeholder for id
   const idPlaceholder = keys.length + 1;
