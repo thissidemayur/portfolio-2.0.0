@@ -10,7 +10,7 @@ DO $$ BEGIN
     'other'
     );
 
-    CREATE TYPE blog_type AS ENUM('personal', 'technical');
+    CREATE TYPE blog_type AS ENUM('TECHNICAL' | 'NON_TECHNICAL');
 
     CREATE TYPE resume_focous AS ENUM('fullstack', 'backend', 'devops');
 
@@ -65,7 +65,8 @@ CREATE TABLE IF NOT EXISTS certificates(
     verify_link TEXT,
     slug VARCHAR(255) UNIQUE NOT NULL,
     credential_url TEXT UNIQUE,
-    is_industry_standard BOOLEAN DEFAULT false
+    is_industry_standard BOOLEAN DEFAULT false,
+    show_on_home BOOLEAN DEFAULT false,
 );
 
 CREATE TABLE IF NOT EXISTS blogs(
