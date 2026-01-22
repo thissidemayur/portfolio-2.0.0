@@ -128,7 +128,6 @@ export const createProject = async(details:Omit<iProject,'id'|'created_at'>,tech
             const bridgeSql = `
                 INSERT INTO project_technologies (project_id,technology_id)
                 VALUES ${placeholders}
-               returning id
             `;
 
             await query(bridgeSql,[projectId,...techIds])
