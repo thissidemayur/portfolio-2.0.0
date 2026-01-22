@@ -56,7 +56,7 @@ export async function createCertificate(data: Omit<iCertificate, 'id'>) {
     return result.rows[0];
   } catch (error) {
     console.error("Error creating certificate:", error);
-    throw new Error("Failed to create certificate");
+    throw error
   }
 }
 
@@ -73,7 +73,7 @@ export async function deleteCertificate(id: number) {
     return result.rows[0];
   } catch (error) {
     console.error("Error deleting certificate:", error);
-    throw new Error("Failed to delete certificate");
+    throw error
   }
 }
 
@@ -82,7 +82,6 @@ export async function updateCertificate(id: number, data: Partial<Omit<iCertific
   try {
     const fieldsToUpdate = {
       ...data,
-      updated_at: new Date().toISOString()
     };
 
     const keys = Object.keys(fieldsToUpdate);
@@ -95,14 +94,20 @@ export async function updateCertificate(id: number, data: Partial<Omit<iCertific
     return result.rows[0];
   } catch (error) {
     console.error("Error updating certificate:", error);
-    throw new Error("Failed to update certificate");
+    throw error
   }
 }
 
 
 export async function getCertificateById(id: number): Promise<iCertificate | null> {
-  const sql = "SELECT * FROM certificates WHERE id = $1";
-  const { rows } = await query(sql, [id]);
-  return rows[0] || null;
+  try {
+    const sql = "SELECT * FROM certificates WHERE id = $1";
+    const { rows } = await query(sql, [id]);
+    return rows[0] || null;
+  } catch (error) {
+    console.error("error while fetching certificate by its id")
+    console.error(error)
+    return null;
+  }
 }
 
