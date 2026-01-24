@@ -6,6 +6,7 @@ import HireMeButton from "@/components/hireButton";
 import { NavigationDock } from "@/components/home/NavigationDock";
 import { PreloadResources } from "./preload-resources";
 import Footer from "@/components/layout/Footer";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -220,6 +221,7 @@ export default function RootLayout({
           <Footer />
           <NavigationDock/>
           <HireMeButton/>
+          <Toaster closeButton richColors position="top-right"/>
 
         </SystemShell>
         <script
