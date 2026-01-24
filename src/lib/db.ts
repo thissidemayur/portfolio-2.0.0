@@ -5,7 +5,7 @@ const poolConfig: PoolConfig = {
     ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
     max: 20,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 10000,
 }
 
 // prevent creating multiple instances of Pool in development(hot reloading)
