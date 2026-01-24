@@ -12,8 +12,8 @@ DO $$ BEGIN
 
     CREATE TYPE blog_type AS ENUM('TECHNICAL' | 'NON_TECHNICAL');
 
-    CREATE TYPE resume_focous AS ENUM('fullstack', 'backend', 'devops');
-
+    CREATE TYPE resume_category AS ENUM('GENERAL', 'FULLSTACK', 'DEVOPS', 'BACKEND')
+    
 EXCEPTION
     WHEN duplicate_object THEN NULL;
 
@@ -84,11 +84,20 @@ CREATE TABLE IF NOT EXISTS blogs(
 
 CREATE TABLE IF NOT EXISTS resumes(
     id SERIAL PRIMARY KEY,
-    version_name VARCHAR(100) UNIQUE NOT NULL,
-    focus_area resume_focous NOT NULL,
-    file_url TEXT NOT NULL,
+    version_name VARCHAR(255) UNIQUE NOT NULL,
+    category resume_category DEFAULT 'GENERAL',
     is_latest BOOLEAN DEFAULT false,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    -- Content stored as JSONB
+    summary JSONB,
+    skills JSONB,
+    experiece JSONB,
+    projects JSONB,
+    achievements JSONB,
+    education JSONB,
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 
