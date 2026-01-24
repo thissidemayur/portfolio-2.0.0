@@ -146,6 +146,10 @@ export const createProject = async(details:Omit<iProject,'id'|'created_at'>,tech
 
 
 export const getProjectById = async (id: number) => {
+    if (isNaN(id) || id <= 0) {
+      console.error("DAL Error: Invalid ID passed to getProjectById:", id);
+      return null;
+    }
   const sql = `
     SELECT p.*, ARRAY_AGG(pt.technology_id) as tech_ids
     FROM projects p
