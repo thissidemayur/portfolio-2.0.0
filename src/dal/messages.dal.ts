@@ -30,6 +30,7 @@ export async function saveContactMessage({
   const sql = `
         INSERT INTO contact_messages (name,email,subject,message) 
         VALUES ($1,$2,$3,$4)
+        RETURNING *
     `;
   const values = [name, email, subject, message];
   const { rows } = await query(sql, values);
