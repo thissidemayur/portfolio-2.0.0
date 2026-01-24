@@ -1,3 +1,5 @@
+import { boolean, number, string } from "zod";
+
 export type iBlog = {
   id: number;
   title: string;
@@ -44,12 +46,43 @@ export type iProject = {
 export type iResume = {
   id: number;
   version_name: string;
-  focus_area: ResumeType;
-  file_url: string;
+  category: ResumeType;
   is_latest: boolean;
-  created_at: string;
+
+  summary: string[];
+  skills: string[];
+
+  experiece: {
+    company: string;
+    role: string;
+    duration: string;
+    location?: string;
+    points: string[];
+  }[];
+
+  projects: {
+    title: string;
+    tech: string;
+    duration?: string;
+    details: string[];
+    link?: string;
+  }[];
+
+  education: {
+    institution: string;
+    degree: string;
+    score: string;
+    location?:string;
+    duration: string;
+  }[];
+
+  achievements: string[];
+
+  created_at: Date;
+  updated_at: Date;
 };
-export type ResumeType = "fullstack" | "backend" | "devops";
+
+export type ResumeType = 'GENERAL'| 'FULLSTACK'| 'DEVOPS'| 'BACKEND';
 
 export type iTech = {
   id: number;
