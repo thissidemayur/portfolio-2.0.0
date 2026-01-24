@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form"; // Added Controller
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -11,7 +11,7 @@ import {
   Github,
   Image as ImageIcon,
   AlertCircle,
-  Code,
+  Plus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -19,13 +19,13 @@ import {
   updateProjectAction,
 } from "@/app/admin/projects/action";
 import { iProject, iTech } from "@/types/database";
+import { RichTextEditor } from "./Editor";
 
-// Define the Schema Type for Zod
 const projectSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   summary: z.string().min(1, "Summary is required"),
-  content: z.string().min(1, "Content is required"),
+  content: z.string().min(10, "Case study content is too short"), // Tiptap field
   image_url: z.string().url("Must be a valid URL"),
   live_url: z.string().url().optional().or(z.literal("")),
   repo_url: z.string().url("Must be a valid URL"),
@@ -71,6 +71,7 @@ export function ProjectForm({
           key_learnings: [""],
           challenges_faced: [""],
           is_featured: false,
+          content: "",
         },
   });
 
@@ -106,9 +107,9 @@ export function ProjectForm({
       onSubmit={handleSubmit(onSubmit)}
       className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8"
     >
-      {/* LEFT COLUMN: Main Content */}
+      {/* LEFT COLUMN */}
       <div className="lg:col-span-8 space-y-6">
-        <section className="bg-[#0A0A0A] p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 space-y-6">
+        <section className="bg-[#0A0A0A] p-5 md:p-8 rounded-[1.5rem] border border-white/5 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <InputWrapper label="Title" error={errors.title?.message}>
               <input
@@ -131,17 +132,25 @@ export function ProjectForm({
             />
           </InputWrapper>
 
+          {/* TIPTAP EDITOR REPLACES TEXTAREA */}
           <InputWrapper
-            label="Content (Markdown/HTML)"
+            label="Full_Case_Study_Content"
             error={errors.content?.message}
           >
-            <textarea
-              {...register("content")}
-              className="w-full bg-black/40 border border-white/10 p-3 md:p-4 rounded-xl outline-none h-64 md:h-96 font-mono text-xs leading-relaxed"
+            <Controller
+              name="content"
+              control={control}
+              render={({ field }) => (
+                <RichTextEditor
+                  content={field.value}
+                  onChange={(html) => field.onChange(html)}
+                />
+              )}
             />
           </InputWrapper>
         </section>
 
+        {/* Other Sections (Problem, Solution, etc.) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputWrapper
             label="Problem Statement"
@@ -163,6 +172,7 @@ export function ProjectForm({
           </InputWrapper>
         </div>
 
+        {/* Array Sections for Learnings and Challenges */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ArrayInputSection
             title="Key_Learnings"
@@ -185,9 +195,9 @@ export function ProjectForm({
         </div>
       </div>
 
-      {/* RIGHT COLUMN: Sidebar (Stacks on mobile) */}
+      {/* RIGHT COLUMN (Sidebar) */}
       <div className="lg:col-span-4 space-y-6">
-        <section className="bg-[#0A0A0A] p-6 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 space-y-4">
+        <section className="bg-[#0A0A0A] p-6 rounded-[1.5rem] border border-white/5 space-y-4">
           <h3 className="text-[10px] font-mono uppercase text-white/20 px-2 tracking-widest">
             Deploy_Assets
           </h3>
@@ -201,6 +211,7 @@ export function ProjectForm({
                 />
               </div>
             </InputWrapper>
+            {/* Live and Repo Links */}
             <InputWrapper label="Live Link" error={errors.live_url?.message}>
               <div className="flex items-center gap-3 px-4 py-3 bg-black/40 border border-white/10 rounded-xl">
                 <Globe size={14} className="text-white/30" />
@@ -222,7 +233,8 @@ export function ProjectForm({
           </div>
         </section>
 
-        <section className="bg-[#0A0A0A] p-6 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 space-y-4">
+        {/* Tech Stack and Launch Button */}
+        <section className="bg-[#0A0A0A] p-6 rounded-[1.5rem] border border-white/5 space-y-4">
           <div className="flex items-center justify-between px-2">
             <h3 className="text-[10px] font-mono uppercase text-white/20 tracking-widest">
               Tech_Stack
@@ -254,7 +266,7 @@ export function ProjectForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="sticky bottom-4 lg:relative w-full py-5 bg-[#00FF94] text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(0,255,148,0.3)] disabled:opacity-50 transition-all z-10"
+          className="w-full py-5 bg-[#00FF94] text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(0,255,148,0.3)] disabled:opacity-50 transition-all"
         >
           {isSubmitting ? (
             <Loader2 className="animate-spin" size={18} />
@@ -270,30 +282,7 @@ export function ProjectForm({
   );
 }
 
-// Sub-components
-function InputWrapper({
-  label,
-  children,
-  error,
-}: {
-  label: string;
-  children: React.ReactNode;
-  error?: string;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <label className="text-[9px] md:text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] ml-2 font-bold">
-        {label}
-      </label>
-      {children}
-      {error && (
-        <p className="text-red-500 text-[9px] font-mono mt-1 ml-2 flex items-center gap-1">
-          <AlertCircle size={10} /> {error}
-        </p>
-      )}
-    </div>
-  );
-}
+
 
 function ArrayInputSection({
   title,
@@ -306,46 +295,105 @@ function ArrayInputSection({
 }: any) {
   return (
     <div className="bg-[#0A0A0A] p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 space-y-5">
+      {/* Header with Dynamic Add Button */}
       <div className="flex justify-between items-center px-1">
-        <h3 className="text-[10px] font-mono uppercase text-white/30 tracking-widest font-bold">
-          {title}
+        <h3 className="text-[10px] font-mono uppercase text-white/30 tracking-[0.2em] font-bold">
+          {title.replace("_", " ")}
         </h3>
         <button
           type="button"
           onClick={() => append("")}
-          className="text-[#00FF94] text-[10px] font-black tracking-widest border border-[#00FF94]/20 px-2 py-1 rounded-md hover:bg-[#00FF94]/5 transition-all"
+          className="text-[#00FF94] text-[9px] font-black tracking-widest border border-[#00FF94]/20 px-3 py-1.5 rounded-lg hover:bg-[#00FF94]/10 transition-all active:scale-95 flex items-center gap-2"
         >
-          + ADD
+          <Plus size={12} strokeWidth={3} /> ADD_ENTRY
         </button>
       </div>
+
+      {/* Dynamic List of Inputs */}
       <div className="space-y-3">
         {fields.map((field: any, i: number) => (
           <div
             key={field.id}
-            className="space-y-2 animate-in fade-in slide-in-from-top-1 duration-200"
+            className="group space-y-2 animate-in fade-in slide-in-from-top-2 duration-300"
           >
-            <div className="flex gap-2">
-              <input
-                {...register(`${name}.${i}`)}
-                placeholder="Action/Result..."
-                className="flex-1 bg-black/20 border border-white/5 p-3 rounded-xl text-xs md:text-sm outline-none focus:border-[#00FF94]/30 transition-all"
-              />
+            <div className="flex gap-3 items-center">
+              {/* Index indicator */}
+              <span className="text-[10px] font-mono text-white/10 w-4">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              
+              <div className="relative flex-1">
+                <input
+                  {...register(`${name}.${i}`)}
+                  placeholder="System_log: input required..."
+                  className="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-xs md:text-sm text-white/80 outline-none focus:border-[#00FF94]/30 focus:bg-black/60 transition-all placeholder:text-white/5"
+                />
+              </div>
+
+              {/* Remove button: only visible/active if there's more than one field */}
               <button
                 type="button"
                 onClick={() => remove(i)}
-                className="p-2 text-red-500/30 hover:text-red-500 transition-colors"
+                className="p-2 text-white/10 hover:text-red-500 transition-colors group-hover:text-white/30"
+                title="Remove Entry"
               >
                 <Trash2 size={16} />
               </button>
             </div>
+
+            {/* Field-specific Validation Error */}
             {errors[name]?.[i] && (
-              <p className="text-red-500 text-[8px] font-mono ml-2 italic">
-                Entry cannot be empty
+              <p className="text-red-500 text-[8px] font-mono ml-9 flex items-center gap-1 uppercase tracking-tighter">
+                <AlertCircle size={10} /> 
+                {errors[name][i].message || "Entry_Void: Payload required"}
               </p>
             )}
           </div>
         ))}
+
+        {/* Empty State UI */}
+        {fields.length === 0 && (
+          <div className="py-8 border-2 border-dashed border-white/5 rounded-2xl flex flex-col items-center justify-center space-y-2">
+            <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest">
+              No_Data_Packets_Found
+            </p>
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Reusable wrapper for standard inputs (Title, Slug, etc.)
+ */
+function InputWrapper({
+  label,
+  children,
+  error,
+}: {
+  label: string;
+  children: React.ReactNode;
+  error?: string;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex justify-between items-center ml-2">
+        <label className="text-[9px] md:text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] font-bold">
+          {label}
+        </label>
+        {error && (
+          <span className="text-red-500 text-[8px] font-mono uppercase tracking-tighter">
+            Error_Detected
+          </span>
+        )}
+      </div>
+      {children}
+      {error && (
+        <p className="text-red-500 text-[9px] font-mono mt-1 ml-2 flex items-center gap-1 animate-in fade-in slide-in-from-left-1">
+          <AlertCircle size={10} /> {error}
+        </p>
+      )}
     </div>
   );
 }
