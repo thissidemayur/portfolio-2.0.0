@@ -1,114 +1,125 @@
 import { query } from "@/lib/db";
 import { iResume, ResumeType } from "@/types/database";
 
-
-// get resume history
-export const getResumeHistory = async()=>{
-    const sql = `
-        SELECT * FROM resumes ORDER BY created_at DESC, is_latest DESC
-    `;
-    const {rows} = await query(sql);
-    return rows;
+// 1. Get Resume History (Listing versions in Admin)
+export const getResumeHistory = async () => {
+  const sql = `SELECT * FROM resumes ORDER BY created_at DESC`;
+  const { rows } = await query(sql);
+  return rows;
 };
 
-// get latest resume by focus area
-export const getLatestResumeByFocusArea = async(focus_area:ResumeType)=>{
-    const sql = `
-        SELECT * FROM resumes WHERE focus_area=$1 AND is_latest = true
-    `;
-    const {rows} = await query(sql,[focus_area]);
-    return rows[0] || null;
-}
+// 2. Get Latest by Focus (For the Public Website)
+export const getLatestResumeByFocusArea = async (category: ResumeType) => {
+  const sql = `
+    SELECT * FROM resumes 
+    WHERE category = $1 AND is_latest = true 
+    LIMIT 1
+  `;
+  const { rows } = await query(sql, [category]);
+  return rows[0] || null;
+};
 
-// upload a new resume
-export const uploadNewResume = async(resume:Omit<iResume,'id' | 'created_at'>)=>{
-    // begin transaction
-    await query('BEGIN');
-    try {
-      // set previous latest to false
-      const updateSql = `
-        UPDATE resumes SET is_latest = false WHERE focus_area = $1 AND is_latest = true
-    `;
-      await query(updateSql, [resume.focus_area]);
-
-      // insert new resume
-      const sql = `
-        INSERT INTO resumes (version_name, focus_area, file_url, is_latest)
-        VALUES ($1,$2,$3,$4)
-        RETURNING *
-    `;
-
-      const values = [
-        resume.version_name,
-        resume.focus_area,
-        resume.file_url,
-        resume.is_latest,
-      ];
-      const { rows } = await query(sql, values);
-
-    //   commit transaction
-    await query('COMMIT')
-      return rows[0];
-    } catch (error) {
-        await query('ROLLBACK');
-        console.error('Error uploading new resume:');
-        console.error(error);
-        throw error
+// 3. Save/Create New Resume Version
+export const createResumeVersion = async (
+  resume: Omit<iResume, "id" | "created_at">,
+) => {
+  await query("BEGIN");
+  try {
+    // If this new version is marked as latest, unset the old one for THIS focus area
+    if (resume.is_latest) {
+      await query(
+        `UPDATE resumes SET is_latest = false WHERE category = $1 AND is_latest = true`,
+        [resume.category],
+      );
     }
 
-}
-
-// delete a resume by id
-export const deleteResumeById = async(id:number)=>{
     const sql = `
-        DELETE FROM resumes WHERE id=$1 RETURNING id
+      INSERT INTO resumes (
+        version_name, category, is_latest, 
+        summary, skills, experience, projects, education, achievements
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING *
     `;
-    const {rows} = await query(sql,[id]);
+
+    const values = [
+      resume.version_name,
+      resume.category,
+      resume.is_latest,
+      resume.summary,
+      resume.skills,
+      resume.experiece,
+      resume.projects,
+      resume.education,
+      resume.achievements,
+    ];
+
+    const { rows } = await query(sql, values);
+    await query("COMMIT");
     return rows[0];
-}
+  } catch (error) {
+    await query("ROLLBACK");
+    throw error;
+  }
+};
 
-// marks a resume as latest
-export const markResumeAsLatest = async(id:number,focus_area:ResumeType)=>{
-    // set previous latest to false
-    const updateSql= `
-        UPDATE resumes SET is_latest = false WHERE focus_area = $1 AND is_latest = true
-
-    `;
-    await query(updateSql,[focus_area])
-
-
-    // set a new latest resume
-    const sql = `
-        UPDATE resumes SET is_latest = true WHERE id=$1
-    `;
-    const {rows} = await query(sql,[id]);
+// 4. Mark specific ID as Latest
+export const markResumeAsLatest = async (
+  id: number,
+  category: ResumeType,
+) => {
+  await query("BEGIN");
+  try {
+    // Unset current latest for this specific category only
+    await query(
+      `UPDATE resumes SET is_latest = false WHERE category = $1 AND is_latest = true`,
+      [category],
+    );
+    // Set new latest
+    const { rows } = await query(
+      `UPDATE resumes SET is_latest = true WHERE id = $1 RETURNING *`,
+      [id],
+    );
+    await query("COMMIT");
     return rows[0];
+  } catch (error) {
+    await query("ROLLBACK");
+    throw error;
+  }
+};
 
-}
+// 5. Update Existing Details (Dynamic SQL)
+export const updateResumeDetails = async (
+  id: number,
+  details: Partial<iResume>,
+) => {
+  const keys = Object.keys(details);
+  if (keys.length === 0) return null;
 
-// get resume by id
-export const getResumeById = async(id:number)=>{
-    const sql = `
-        SELECT * FROM resumes WHERE id=$1
-    `;
-    const {rows} = await query(sql,[id]);
-    return rows[0] || null;
-}
+  const setClause = keys.map((k, i) => `${k} = $${i + 1}`).join(", ");
+  const sql = `UPDATE resumes SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+  const values = [...Object.values(details), id];
 
-// update resume details
-export const updateResumeDetails = async(id:number,details:Partial<Omit<iResume,'id' | 'created_at'>>)=>{
+  const { rows } = await query(sql, values);
+  return rows[0];
+};
+
+
+// 6. Upload New Resume (Alias for createResumeVersion to match your Actions)
+export const uploadNewResume = async (
+  resume: Omit<iResume, "id" | "created_at">
+) => {
+  return await createResumeVersion(resume);
+};
+
+// 7. Delete Resume By ID
+export const deleteResumeById = async (id: number) => {
+  const sql = `DELETE FROM resumes WHERE id = $1 RETURNING *`;
+  const { rows } = await query(sql, [id]);
   
-    // 
-    const key = Object.keys(details);
-    if (key.length ===0) return null;
-
-    // build dynamic set clause
-    const setClause = key.map((k,i) => `${k} = $${i + 1}`).join(', ');
-
-    const sql = `
-        UPDATE resumes SET ${setClause} WHERE id = $${key.length + 1} RETURNING *
-    `;
-    const values = [...Object.values(details), id];
-    const {rows} = await query(sql,values);
-    return rows[0] || null;
-}
+  if (rows.length === 0) {
+    throw new Error("Resume not found or already deleted.");
+  }
+  
+  return rows[0];
+};
