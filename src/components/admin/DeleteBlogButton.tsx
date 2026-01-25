@@ -2,7 +2,7 @@
 
 import { Trash2, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { deleteBlogAction } from "@/app/admin/blogs/action"; // We'll create this action
+import { deleteBlogAction } from "@/actions/blog.actions"; // We'll create this action
 import { useRouter } from "next/navigation";
 
 export  function DeleteBlogButton({

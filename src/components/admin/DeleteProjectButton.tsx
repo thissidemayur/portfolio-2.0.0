@@ -1,7 +1,7 @@
 // src/components/admin/DeleteProjectButton.tsx
 "use client";
 
-import { deleteProjectAction } from "@/app/admin/projects/action"; // Import Action
+import { deleteProjectAction } from "@/actions/projects.actions"; // Import Action
 import { Trash2 } from "lucide-react";
 
 export  function DeleteProjectButton({

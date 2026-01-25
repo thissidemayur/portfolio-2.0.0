@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import {
   createProjectAction,
   updateProjectAction,
-} from "@/app/admin/projects/action";
+} from "@/actions/projects.actions";
 import { iProject, iTech } from "@/types/database";
 import { RichTextEditor } from "./Editor";
 

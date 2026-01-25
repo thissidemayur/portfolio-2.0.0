@@ -1,5 +1,5 @@
 "use client";
-import { removeCertAction } from "@/app/admin/certifications/action";
+import { removeCertAction } from "@/actions/certificates.actions";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 

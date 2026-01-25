@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { addTechAction } from "@/app/admin/tech/action";
+import { addTechAction } from "@/actions/tech.actions";
 import { Plus, Loader2, AlertCircle } from "lucide-react";
 import { TechCategory } from "@/types/database";
 

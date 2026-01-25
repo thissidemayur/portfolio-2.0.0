@@ -4,7 +4,7 @@ import { CheckCircle, Trash2, Loader2 } from "lucide-react";
 import {
   markAsReadAction,
   deleteMessageAction,
-} from "@/app/admin/messages/action";
+} from "@/actions/messages.actions";
 
 export default function MessageActions({
   id,

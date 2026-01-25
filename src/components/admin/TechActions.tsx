@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   toggleMainStackAction,
   deleteTechAction,
-} from "@/app/admin/tech/action";
+} from "@/actions/tech.actions";
 
 export default function TechActions({
   id,

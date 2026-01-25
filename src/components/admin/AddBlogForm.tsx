@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Save, Loader2, ImageIcon, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { createBlogAction, updateBlogAction } from "@/app/admin/blogs/action";
+import { createBlogAction, updateBlogAction } from "@/actions/blog.actions";
 import { iBlog } from "@/types/database";
 import { RichTextEditor } from "./Editor";
 

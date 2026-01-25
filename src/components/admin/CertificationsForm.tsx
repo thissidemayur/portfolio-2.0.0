@@ -18,7 +18,7 @@ import Link from "next/link";
 import {
   updateCertAction,
   createCertAction,
-} from "@/app/admin/certifications/action";
+} from "@/actions/certificates.actions";
 import { useRouter } from "next/navigation";
 
 const certSchema = z.object({
