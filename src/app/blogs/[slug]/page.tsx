@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import BlogHeader from "@/components/blog/BlogHeader";
 import BlogContent from "@/components/blog/BlogContent";
 import BlogFooter from "@/components/blog/BlogFooter";
-import { getBlogBySlug } from "@/dal/blogs.dal";
+import { getBlogBySlug, getPublicBlogBySlug } from "@/dal/blogs.dal";
 import { iBlog } from "@/types/database";
 
 // Next.js 15 uses a Promise for params
@@ -16,7 +16,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post: iBlog = await getBlogBySlug(slug);
+  const post: iBlog = await getPublicBlogBySlug(slug);
 
   if (!post) return { title: "Post Not Found" };
 

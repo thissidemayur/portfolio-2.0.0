@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import BlogFilters from "@/components/blog/BlogFilter";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getAllBlog } from "@/dal/blogs.dal";
+import {  getAllPublicBlog } from "@/dal/blogs.dal";
 import { iBlog } from "@/types/database";
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const posts: iBlog[] = await getAllBlog({offset:0});
+  const posts: iBlog[] = await getAllPublicBlog({offset:0});
  
   const blogPageSchema = {
     "@context": "https://schema.org",
