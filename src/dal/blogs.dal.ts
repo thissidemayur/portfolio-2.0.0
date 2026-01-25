@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import { iBlog } from "@/types/database";
+import { cacheTag } from "next/cache";
 
 // get all blogs
 export const getAllBlog = async ({
@@ -49,7 +50,7 @@ export const addNewBlog = async (blog: Omit<iBlog, "id" | "published_at" | "crea
 // delete a blog
 export const deleteBlog = async (id: number) => {
   const sql = `
-        DELETE FROM blogs WHERE id=$1
+        DELETE FROM blogs WHERE id=$1 RETURNING id, slug
     `;
   const { rows } = await query(sql, [id]);
   return rows[0];
@@ -87,5 +88,36 @@ export const getBlogById = async (id: number) => {
         SELECT * FROM blogs WHERE id = $1
     `;
   const { rows } = await query(sql, [id]);
+  return rows[0] || null;
+};
+
+
+// non-admin method for caching use for public method
+// get all blogs
+export const getAllPublicBlog = async ({
+  limit,
+  offset,
+}: {
+  limit?: number;
+  offset: number;
+}) => {
+  'use cache'
+  cacheTag("blogs")
+  const sql = `
+        SELECT * FROM blogs ORDER BY published_at DESC LIMIT $1 OFFSET $2
+    `;
+  const values = [limit || 100, offset];
+  const { rows } = await query(sql, values);
+  return rows;
+};
+
+// GET blog by slug
+export const getPublicBlogBySlug = async (slug: string) => {
+  'use cache'
+  cacheTag(`blog-${slug}`)
+  const sql = `
+        SELECT * FROM blogs WHERE slug = $1
+    `;
+  const { rows } = await query(sql, [slug]);
   return rows[0] || null;
 };

@@ -2,7 +2,7 @@
 
 import { addNewBlog, deleteBlog, updateBlog } from "@/dal/blogs.dal";
 import { iBlog } from "@/types/database";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function createBlogAction(
   blogData: Omit<iBlog, "id" | "updated_at" | "published_at">,
@@ -10,8 +10,11 @@ export async function createBlogAction(
   try {
     const result = await addNewBlog(blogData);
 
-    revalidatePath("/admin/blogs");
+    revalidateTag("blogs", "max");
+
+    revalidatePath("/");
     revalidatePath("/blogs");
+
     return { success: true, id: result.id };
   } catch (error) {
     console.error("Failed while creating the blog:", error);
@@ -21,11 +24,15 @@ export async function createBlogAction(
 
 export async function deleteBlogAction(id: number) {
   try {
-    await deleteBlog(id);
+    const blog = await deleteBlog(id);
 
-    // Clear cache for both the admin panel and the public blog list
-    revalidatePath("/admin/blogs");
+    if (blog) {
+      revalidateTag("blogs", "max");
+      revalidateTag(`blog-${blog.slug}`, "max");
+    }
+
     revalidatePath("/blogs");
+    revalidatePath("/");
 
     return { success: true };
   } catch (error) {
@@ -36,12 +43,18 @@ export async function deleteBlogAction(id: number) {
 
 export async function updateBlogAction(id: number, data: Partial<iBlog>) {
   try {
-    await updateBlog(id, data);
-    revalidatePath("/admin/blogs");
-    revalidatePath(`/blogs/${data.slug}`);
+    const blog: iBlog = await updateBlog(id, data);
+
+    revalidateTag("blogs", "max");
+    revalidateTag(`blog-${blog.slug}`, "max");
+
+    revalidatePath("/blogs");
+    revalidatePath(`/blogs/${blog.slug}`);
+    revalidatePath("/");
+
     return { success: true };
   } catch (error) {
-    console.error(`failed while updating the blogs: ${error}`)
+    console.error(`Failed while updating the blogs: ${error}`);
     return { success: false, error: "Failed to update blog" };
   }
 }
