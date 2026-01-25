@@ -2,16 +2,17 @@
 "use server";
 import { createCertificate, deleteCertificate, updateCertificate } from "@/dal/certificates.dal";
 import { iCertificate } from "@/types/database";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function toggleHomeVisibility(id: number, currentState: boolean) {
   try {
     await updateCertificate(id, { show_on_home: !currentState });
 
-    // Refresh the data on the certification page and homepage
-    revalidatePath("/certification");
+    revalidateTag("certificates", "max");
     revalidatePath("/");
+    revalidatePath("/certificates");
+   
   } catch (error) {
     console.error(error);
     return {
@@ -24,10 +25,12 @@ export async function toggleHomeVisibility(id: number, currentState: boolean) {
 export async function removeCertAction(id: number) {
   try {
     await deleteCertificate(id);
-    // Refresh the admin and public certification pages
-    revalidatePath("/admin/certifications");
-    revalidatePath("/certification");
+
+    revalidateTag("certificates", "max");
+
     revalidatePath("/");
+    revalidatePath("/certificates");
+   
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -50,8 +53,11 @@ export async function updateCertAction(
 
     await updateCertificate(id, formattedData);
 
-    revalidatePath("/admin/certifications");
-    revalidatePath("/certification");
+    revalidateTag("certificates", "max");
+
+    revalidatePath("/");
+    revalidatePath("/certificates");
+    
 
     isSuccessful = true;
   } catch (error) {
@@ -75,8 +81,10 @@ export async function createCertAction(data: Omit<iCertificate,'id'>) {
 
     await createCertificate(formattedData);
 
-    revalidatePath("/admin/certifications");
-    revalidatePath("/certification");
+    revalidateTag("certificates","max")
+
+    revalidatePath("/")
+    revalidatePath("/certificates")
 
     return { success: true };
   } catch (error) {
