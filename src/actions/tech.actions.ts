@@ -5,42 +5,53 @@ import {
   deleteTechnologyById,
   updateTechnologyById,
 } from "@/dal/tech.dal";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { iTech } from "@/types/database";
-import { revalidatePath } from "next/cache";
 
-export async function addTechAction(data: iTech) {
+export async function addTechAction(data: Omit<iTech, "id">) {
   try {
     await addTechnology(data);
-    revalidatePath("/admin/tech");
-    revalidatePath("/admin/projects/new"); // Update the selector in project forms
+
+    revalidateTag("technologies", "max");
+    // Also invalidate projects because they display these tech names
+    revalidateTag("projects", "max");
+
+    revalidatePath("/");
+    revalidatePath("/projects");
     return { success: true };
   } catch (error) {
-    return { success: false, error: "Failed to add technology." };
+    return { success: false, error: "Failed to add technology" };
+  }
+}
+
+export async function updateTechAction(id: number, data: Partial<iTech>) {
+  try {
+    await updateTechnologyById(id, data);
+
+    revalidateTag("technologies", "max");
+    revalidateTag("projects", "max");
+
+    revalidatePath("/");
+    revalidatePath("/projects");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Update failed" };
   }
 }
 
 export async function deleteTechAction(id: number) {
   try {
     await deleteTechnologyById(id);
-    revalidatePath("/admin/tech");
+
+    revalidateTag("technologies", "max");
+    revalidateTag("projects", "max");
+
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     return {
       success: false,
-      error: "Cannot delete tech if it is linked to projects.",
+      error: "Cannot delete: Tech might be linked to projects",
     };
-  }
-}
-
-export async function toggleMainStackAction(
-  id: number,
-  currentStatus: boolean,
-) {
-  try {
-    await updateTechnologyById(id, { is_main_stack: !currentStatus });
-    revalidatePath("/admin/tech");
-    return { success: true };
-  } catch (error) {
-    return { success: false, error: "Failed to update stack status." };
   }
 }

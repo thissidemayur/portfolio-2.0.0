@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import { iTech } from "@/types/database";
+import { cacheTag } from "next/cache";
 
 
 
@@ -74,5 +75,33 @@ export const updateTechnologyById = async(id:number,tech:Partial<Omit<iTech,'id'
     const values = [...Object.values(tech),id];
     const { rows } = await query(sql,values);
     return rows[0];
+}
+
+
+export const getPublicSkillsByCategory = async () => {
+    'use cache';
+    cacheTag('technologies');
+    
+    const sql = `
+        SELECT category, json_agg(json_build_object(
+            'id', id,
+            'name', name,
+            'icon_slug', icon_slug,
+            'is_main_stack', is_main_stack
+        )) as skills 
+        FROM technologies
+        GROUP BY category;
+    `;
+
+    const { rows } = await query(sql);
+    return rows;
+};
+
+export const getPublicMainStack = async () => {
+    'use cache';
+    cacheTag('technologies');
+    const sql = `SELECT * FROM technologies WHERE is_main_stack = true`;
+    const { rows } = await query(sql);
+    return rows;
 }
 
