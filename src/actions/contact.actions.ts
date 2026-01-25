@@ -43,12 +43,11 @@ export async function handleContactSubmission(data: {
 }) {
  try {
      await saveContactMessage(data);
+        revalidatePath("/admin");
+         revalidatePath("/admin/messages");
    
      const emailResult = await sendContactEmail(data);
-   
-   //   refresh cache 
-       revalidatePath("/admin")
-   
+      
        if(!emailResult.success) {
            return {
              success: true,
