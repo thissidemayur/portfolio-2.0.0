@@ -6,6 +6,9 @@ import { getAllCertificates } from "@/dal/certificates.dal";
 import {  ArrowUpRight, Plus } from "lucide-react";
 import Link from "next/link";
 import { iCertificate, IMsg, iProject } from "@/types/database";
+import { Suspense } from "react";
+import AdminLoading from "@/components/admin/SuspenseDashboard";
+
 
 export default async function AdminDashboard() {
   // 2. Add certifications to the parallel fetch
@@ -34,7 +37,8 @@ export default async function AdminDashboard() {
         </p>
       </header>
 
-      {/* Primary Stats */}
+    <Suspense fallback={<AdminLoading />} >
+      {/* Primary Stats  */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           title="Projects"
@@ -120,6 +124,7 @@ export default async function AdminDashboard() {
           </div>
         </div>
       </div>
+      </Suspense>
     </div>
   );
 }

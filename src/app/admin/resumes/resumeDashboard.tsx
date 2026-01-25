@@ -10,7 +10,7 @@ import {
   Clock,
   LayoutGrid,
 } from "lucide-react";
-import { deleteResumeAction, setLatestAction } from "./action";
+import { deleteResumeAction, setLatestAction } from "../../../actions/resumes.actions";
 import { toast } from "sonner"; // Assuming sonner for feedback
 import { ResumeAdminForm } from "@/components/admin/AddResumeForm";
 

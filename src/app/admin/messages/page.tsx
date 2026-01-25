@@ -1,15 +1,41 @@
 import { getMessages } from "@/dal/messages.dal";
-import { Mail, Clock, User, ArrowLeft, Radio } from "lucide-react";
-import MessageRow from "@/components/admin/MessageRow"; // New Client Component
+import { ArrowLeft, Radio } from "lucide-react";
+import MessageRow from "@/components/admin/MessageRow";
 import { IMsg } from "@/types/database";
 import Link from "next/link";
+import { Suspense } from "react";
+import MessagesLoading from "@/components/admin/SuspenseMessage";
 
-export default async function AdminMessagesPage() {
+// 1. Create the Data-Fetching Component
+async function MessageList() {
+  // THE AWAIT HAPPENS INSIDE THE SUSPENSE BOUNDARY
   const messages = await getMessages();
 
+  if (messages.length === 0) {
+    return (
+      <div className="p-20 border border-dashed border-white/5 rounded-[2.5rem] text-center">
+        <p className="text-white/10 font-mono text-sm tracking-widest uppercase">
+          NO_INCOMING_SIGNALS_DETECTED
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {messages.map((msg: IMsg) => (
+        <MessageRow key={msg.id} msg={msg} />
+      ))}
+    </div>
+  );
+}
+
+// 2. The Main Page (The "Shell")
+export default function AdminMessagesPage() {
+  // NOTICE: No "await" here!
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-10">
-      {/* SYSTEM NAVIGATION */}
+      {/* THIS PART LANDS IN THE BROWSER INSTANTLY */}
       <div className="flex items-center justify-between">
         <Link
           href="/admin"
@@ -37,20 +63,10 @@ export default async function AdminMessagesPage() {
         </p>
       </header>
 
-      <div className="space-y-4">
-        {messages.length === 0 ? (
-          <div className="p-20 border border-dashed border-white/5 rounded-[2.5rem] text-center">
-            <p className="text-white/10 font-mono text-sm tracking-widest uppercase">
-              NO_INCOMING_SIGNALS_DETECTED
-            </p>
-          </div>
-        ) : (
-          messages.map((msg: IMsg) => (
-            /* We pass the message to a client component for the expand logic */
-            <MessageRow key={msg.id} msg={msg} />
-          ))
-        )}
-      </div>
+      {/* THE SERVER SENDS THE FALLBACK WHILE MessageList IS BUSY */}
+      <Suspense fallback={<MessagesLoading />}>
+        <MessageList />
+      </Suspense>
     </div>
   );
 }

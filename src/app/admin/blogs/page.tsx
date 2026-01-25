@@ -1,11 +1,78 @@
 import Link from "next/link";
-import { Plus, PenTool, Hash, Calendar } from "lucide-react";
+import { PenTool, Calendar } from "lucide-react";
 import { getAllBlog } from "@/dal/blogs.dal";
-import {DeleteBlogButton} from "@/components/admin/DeleteBlogButton";
+import { DeleteBlogButton } from "@/components/admin/DeleteBlogButton";
+import { Suspense } from "react";
+import BlogsLoading from "@/components/admin/SuspenseBlog";
 
-export default async function AdminBlogsPage() {
+// 1. THE DATA COMPONENT: The "Await" is encapsulated here
+async function BlogList() {
   const blogs = await getAllBlog({ limit: 100, offset: 0 });
 
+  if (blogs.length === 0) {
+    return (
+      <div className="p-20 text-center border border-dashed border-white/5 rounded-[2.5rem]">
+        <p className="text-white/10 font-mono text-sm tracking-widest uppercase">
+          NO_JOURNAL_ENTRIES_FOUND
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <tbody className="divide-y divide-white/5">
+      {blogs.map((blog) => (
+        <tr
+          key={blog.id}
+          className="group hover:bg-white/[0.02] transition-colors"
+        >
+          <td className="p-6">
+            <span
+              className={`px-3 py-1 rounded-full text-[9px] font-bold border ${
+                blog.category === "TECHNICAL"
+                  ? "border-blue-500/30 text-blue-400 bg-blue-500/5"
+                  : "border-purple-500/30 text-purple-400 bg-purple-500/5"
+              }`}
+            >
+              {blog.category}
+            </span>
+          </td>
+          <td className="p-6">
+            <div className="flex flex-col">
+              <span className="font-bold text-sm text-white/90">
+                {blog.title}
+              </span>
+              <span className="text-[10px] font-mono text-white/20">
+                /{blog.slug}
+              </span>
+            </div>
+          </td>
+          <td className="p-6">
+            <div className="flex items-center gap-2 text-white/40 text-xs">
+              <Calendar size={12} />
+              {new Date(blog.published_at).toLocaleDateString()}
+            </div>
+          </td>
+          <td className="p-6 text-right">
+            <div className="flex justify-end gap-4">
+              <Link
+                href={`/admin/blogs/${blog.id}`}
+                className="text-blue-400 hover:text-white"
+              >
+                <PenTool size={18} />
+              </Link>
+              <DeleteBlogButton id={blog.id} title={blog.title} />
+            </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  );
+}
+
+// 2. THE PAGE COMPONENT: Returns the static "Shell" instantly
+// 2. THE PAGE COMPONENT
+export default function AdminBlogsPage() {
   return (
     <div className="space-y-10">
       <header className="flex justify-between items-center">
@@ -25,65 +92,75 @@ export default async function AdminBlogsPage() {
         </Link>
       </header>
 
-      <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-white/5 text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
-            <tr>
-              <th className="p-6">Type</th>
-              <th className="p-6">Title</th>
-              <th className="p-6">Published</th>
-              <th className="p-6 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {blogs.map((blog) => (
-              <tr
-                key={blog.id}
-                className="group hover:bg-white/[0.02] transition-colors"
-              >
-                <td className="p-6">
-                  <span
-                    className={`px-3 py-1 rounded-full text-[9px] font-bold border ${
-                      blog.category === "TECHNICAL"
-                        ? "border-blue-500/30 text-blue-400 bg-blue-500/5"
-                        : "border-purple-500/30 text-purple-400 bg-purple-500/5"
-                    }`}
-                  >
-                    {blog.category}
-                  </span>
-                </td>
-                <td className="p-6">
-                  <div className="flex flex-col">
-                    <span className="font-bold text-sm text-white/90">
-                      {blog.title}
-                    </span>
-                    <span className="text-[10px] font-mono text-white/20">
-                      /{blog.slug}
-                    </span>
-                  </div>
-                </td>
-                <td className="p-6">
-                  <div className="flex items-center gap-2 text-white/40 text-xs">
-                    <Calendar size={12} />
-                    {new Date(blog.published_at).toLocaleDateString()}
-                  </div>
-                </td>
-                <td className="p-6 text-right">
-                  <div className="flex justify-end gap-4">
-                    <Link
-                      href={`/admin/blogs/${blog.id}`}
-                      className="text-blue-400 hover:text-white transition-colors"
-                    >
-                      <PenTool size={18} />
-                    </Link>
-                    <DeleteBlogButton id={blog.id} title={blog.title} />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* WRAP THE ENTIRE TABLE AREA IN SUSPENSE 
+          This prevents <table> inside <table> 
+      */}
+      <Suspense fallback={<BlogsLoading />}>
+        <BlogTableContainer />
+      </Suspense>
+    </div>
+  );
+}
+
+// 3. NEW WRAPPER COMPONENT: Handles the table structure + data fetching
+async function BlogTableContainer() {
+  const blogs = await getAllBlog({ limit: 100, offset: 0 });
+
+  if (blogs.length === 0) {
+    return (
+      <div className="p-20 text-center border border-dashed border-white/5 rounded-[2.5rem]">
+        <p className="text-white/10 font-mono text-sm tracking-widest uppercase">
+          NO_JOURNAL_ENTRIES_FOUND
+        </p>
       </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] overflow-hidden">
+      <table className="w-full text-left border-collapse">
+        <thead className="bg-white/5 text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
+          <tr>
+            <th className="p-6">Type</th>
+            <th className="p-6">Title</th>
+            <th className="p-6">Published</th>
+            <th className="p-6 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-white/5">
+          {blogs.map((blog) => (
+            <tr key={blog.id} className="group hover:bg-white/[0.02] transition-colors">
+              <td className="p-6">
+                <span className={`px-3 py-1 rounded-full text-[9px] font-bold border ${
+                  blog.category === "TECHNICAL" ? "border-blue-500/30 text-blue-400 bg-blue-500/5" : "border-purple-500/30 text-purple-400 bg-purple-500/5"
+                }`}>
+                  {blog.category}
+                </span>
+              </td>
+              <td className="p-6">
+                <div className="flex flex-col">
+                  <span className="font-bold text-sm text-white/90">{blog.title}</span>
+                  <span className="text-[10px] font-mono text-white/20">/{blog.slug}</span>
+                </div>
+              </td>
+              <td className="p-6">
+                <div className="flex items-center gap-2 text-white/40 text-xs">
+                  <Calendar size={12} />
+                  {new Date(blog.published_at).toLocaleDateString()}
+                </div>
+              </td>
+              <td className="p-6 text-right">
+                <div className="flex justify-end gap-4">
+                  <Link href={`/admin/blogs/${blog.id}`} className="text-blue-400 hover:text-white">
+                    <PenTool size={18} />
+                  </Link>
+                  <DeleteBlogButton id={blog.id} title={blog.title} />
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
