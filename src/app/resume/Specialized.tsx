@@ -68,7 +68,7 @@ export const SpecializedResumeLayout = ({ data }: { data: iResume }) => {
           <h2 className="text-xs font-bold uppercase border-b border-black pb-0.5 mb-2 tracking-wide text-gray-800">
             Internship
           </h2>
-          {data.experiece.map((exp, i) => (
+          {data.experience?.map((exp, i) => (
             <div key={i} className="mb-4 text-[11px]">
               <div className="flex justify-between font-bold">
                 <span className="text-blue-900">{exp.role}</span>

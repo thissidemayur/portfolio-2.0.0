@@ -96,7 +96,7 @@ export const GeneralResumeLayout = ({ data }: { data: iResume }) => {
         <h2 className="text-xs font-bold text-[#303F9F] uppercase border-b border-gray-300 pb-0.5 mb-2">
           Internship
         </h2>
-        {data.experiece.map((exp, i) => (
+        {data.experience?.map((exp, i) => (
           <div key={i} className="mb-3">
             <div className="flex justify-between font-bold text-[11px]">
               <span className="text-[#303F9F]">{exp.company}</span>

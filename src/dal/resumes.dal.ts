@@ -146,3 +146,18 @@ export const getPublicLatestResumeByCategory = async (category: ResumeType) => {
   const { rows } = await query(sql, [category]);
   return rows[0] || null;
 };
+
+// We create a specific DAL caller that gets the latest for ALL categories
+export async function getLatestResumesForAllCategories(): Promise<iResume[]> {
+  'use cache';
+  cacheTag('resumes');
+  
+  // This query gets the latest entry for EACH category in one go
+  const sql = `
+    SELECT * FROM resumes 
+    WHERE is_latest = true
+    ORDER BY category ASC
+  `;
+  const { rows } = await query(sql);
+  return rows;
+}

@@ -1,17 +1,11 @@
-// src/app/resume/page.tsx
-import { query } from "@/lib/db";
 import { iResume } from "@/types/database";
 import ResumeClientView from "./ResumeClientView";
+import { getLatestResumesForAllCategories } from "@/dal/resumes.dal";
 
-async function getAllLatestResumes() {
-  // Fetches the 'is_latest' version for every category found in the DB
-  const sql = `SELECT * FROM resumes WHERE is_latest = true`;
-  const { rows } = await query(sql);
-  return rows as iResume[];
-}
+
 
 export default async function ResumePage() {
-  const latestResumes = await getAllLatestResumes();
+  const latestResumes: iResume[] = await getLatestResumesForAllCategories();
 
   if (!latestResumes || latestResumes.length === 0) {
     return (
