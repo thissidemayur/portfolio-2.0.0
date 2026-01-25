@@ -6,22 +6,20 @@ import {
   updateResumeDetails,
   uploadNewResume,
 } from "@/dal/resumes.dal";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { ResumeType, iResume } from "@/types/database";
+import { da } from "zod/v4/locales";
 
-/**
- * Creates a new resume record.
- * The DAL 'uploadNewResume' handles the transaction to unset
- * previous 'is_latest' flags if the new one is set to true.
- */
+
 export async function uploadResumeAction(
   data: Omit<iResume, "id" | "created_at">,
 ) {
   try {
-    await uploadNewResume(data);
+    const updated = await uploadNewResume(data);
 
-    // Refresh the data for both the admin dashboard and the public site
-    revalidatePath("/admin/resumes");
+    revalidateTag("resumes","max")
+    revalidateTag(`resume-${updated.category}`,"max")
+    revalidatePath("/resume");
     revalidatePath("/");
 
     return { success: true };
@@ -41,7 +39,10 @@ export async function updateResumeAction(
 ) {
   try {
     await updateResumeDetails(id, details);
-    revalidatePath("/admin/resumes");
+      revalidateTag("resumes", "max");
+      revalidateTag(`resume-${details.category}`,"max")
+      revalidatePath("/resume");
+      revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("Update Action Error:", error);
@@ -50,13 +51,14 @@ export async function updateResumeAction(
 }
 
 
-export async function setLatestAction(id: number, focus_area: ResumeType) {
+export async function setLatestAction(id: number, category: ResumeType) {
   try {
-    await markResumeAsLatest(id, focus_area);
+    await markResumeAsLatest(id, category);
 
-    revalidatePath("/admin/resumes");
-    revalidatePath("/"); // Update public hero/about download button
-
+     revalidateTag("resumes", "max");
+     revalidateTag(`resume-${category}`, "max");
+     revalidatePath("/resume");
+     revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("Set Latest Action Error:", error);
@@ -68,7 +70,9 @@ export async function setLatestAction(id: number, focus_area: ResumeType) {
 export async function deleteResumeAction(id: number) {
   try {
     await deleteResumeById(id);
-    revalidatePath("/admin/resumes");
+      revalidateTag("resumes", "max");
+      revalidatePath("/resume");
+      revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("Delete Action Error:", error);

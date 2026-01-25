@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import { iResume, ResumeType } from "@/types/database";
+import { cacheTag } from "next/cache";
 
 // 1. Get Resume History (Listing versions in Admin)
 export const getResumeHistory = async () => {
@@ -9,7 +10,7 @@ export const getResumeHistory = async () => {
 };
 
 // 2. Get Latest by Focus (For the Public Website)
-export const getLatestResumeByFocusArea = async (category: ResumeType) => {
+export const getLatestResumeByCategory = async (category: ResumeType) => {
   const sql = `
     SELECT * FROM resumes 
     WHERE category = $1 AND is_latest = true 
@@ -48,7 +49,7 @@ export const createResumeVersion = async (
       resume.is_latest,
       resume.summary,
       resume.skills,
-      resume.experiece,
+      resume.experience,
       resume.projects,
       resume.education,
       resume.achievements,
@@ -122,4 +123,26 @@ export const deleteResumeById = async (id: number) => {
   }
   
   return rows[0];
+};
+
+
+// 2 dal caching strategy
+export const getPublicResumeHistory = async () => {
+  'use cache'
+  cacheTag('resumes')
+  const sql = `SELECT * FROM resumes ORDER BY created_at DESC`;
+  const { rows } = await query(sql);
+  return rows;
+};
+
+export const getPublicLatestResumeByCategory = async (category: ResumeType) => {
+  'use cache'
+  cacheTag(`resume-${category}`)
+  const sql = `
+    SELECT * FROM resumes 
+    WHERE category = $1 AND is_latest = true 
+    LIMIT 1
+  `;
+  const { rows } = await query(sql, [category]);
+  return rows[0] || null;
 };
