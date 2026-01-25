@@ -1,15 +1,18 @@
-// src/app/admin/projects/actions.ts
 "use server";
 
 import { deleteProject, updateProjectDetails } from "@/dal/projects.dal";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createProject } from "@/dal/projects.dal";
 import { iProject } from "@/types/database";
 
 export async function deleteProjectAction(id: number) {
   try {
-    await deleteProject(id);
-    revalidatePath("/admin/projects"); // Clears cache so the list updates
+    const project = await deleteProject(id);
+    revalidateTag("projects","max")
+    revalidateTag(`project-${project.slug}`,"max")
+    revalidatePath("/projects"); 
+    revalidatePath(`/projects/${project.slug}`)
+    revalidatePath("/")
     return { success: true };
   } catch (error) {
     console.error('failed to delete project',error)
@@ -23,9 +26,9 @@ export async function createProjectAction(
 ) {
   try {
     const projectId = await createProject(details, techIds);
-    // This clears the cache so the public /projects and admin list show the new data immediately
-    revalidatePath("/admin/projects");
-    revalidatePath("/projects");
+     revalidateTag("projects", "max");
+     revalidatePath("/projects");
+     revalidatePath("/");
     return { success: true, id: projectId };
   } catch (error) {
     console.error("Failed to create project:", error);
@@ -40,8 +43,11 @@ export async function updateProjectAction(
 ) {
   try {
     await updateProjectDetails(id, { ...data, techIds });
-    revalidatePath("/admin/projects");
-    revalidatePath(`/projects/${data.slug}`);
+     revalidateTag("projects", "max");
+     revalidateTag(`project-${data.slug}`, "max");
+     revalidatePath("/projects");
+     revalidatePath(`/projects/${data.slug}`);
+     revalidatePath("/");
     return { success: true };
   } catch (error) {
         console.error("failed to u[date project", error);

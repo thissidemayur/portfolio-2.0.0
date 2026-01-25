@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import { iProject } from "@/types/database";
+import { cacheTag } from "next/cache";
 
 // get all projects with their tech stack
 export const getAllProjects = async() => {
@@ -74,7 +75,7 @@ export const deleteProject = async(id:number)=>{
         // delete the link first
         await query("DELETE FROM project_technologies WHERE project_id = $1", [id]);        
         // delete the project
-        const sql = `DELETE FROM projects WHERE id = $1 RETURNING id`
+        const sql = `DELETE FROM projects WHERE id = $1 RETURNING id,slug`
         const {rows} = await query(sql,[id])
         await query('COMMIT')
         return rows[0]
@@ -86,7 +87,6 @@ export const deleteProject = async(id:number)=>{
         throw error
     }
 }
-
 
 // create new project
 export const createProject = async(details:Omit<iProject,'id'|'created_at'>,techIds:number[])=>{
@@ -144,7 +144,6 @@ export const createProject = async(details:Omit<iProject,'id'|'created_at'>,tech
 
 }
 
-
 export const getProjectById = async (id: number) => {
     if (isNaN(id) || id <= 0) {
       console.error("DAL Error: Invalid ID passed to getProjectById:", id);
@@ -158,5 +157,36 @@ export const getProjectById = async (id: number) => {
     GROUP BY p.id
   `;
   const { rows } = await query(sql, [id]);
+  return rows[0] || null;
+};
+
+
+// public method for caching 
+export const getAllPublicProjects = async () => {
+    'use cache'
+    cacheTag('projects')
+  const sql = `
+        SELECT p.* ,ARRAY_AGG(t.name) as tech_stack FROM projects p 
+        LEFT JOIN project_technologies pt ON p.id =pt.project_id
+        LEFT JOIN Technologies t ON pt.technology_id = t.id
+        GROUP BY p.id
+        ORDER BY p.id DESC
+        `;
+  const { rows } = await query(sql);
+  return rows;
+};
+
+// get project by id with its tech stack
+export const getPublicProjectBySlug = async (slug: string) => {
+    'use cache'
+    cacheTag(`project-${slug}`)
+  const sql = `
+        SELECT p.* , ARRAY_AGG(t.name) AS tech_stack FROM projects p 
+        LEFT JOIN project_technologies pt ON pt.project_id = p.id
+        LEFT JOIN technologies t On t.id = pt.technology_id
+        WHERE p.slug = $1
+        GROUP BY p.id
+    `;
+  const { rows } = await query(sql, [slug]);
   return rows[0] || null;
 };
