@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import ProjectList from "@/components/projects/ProjectList";
-import { getAllProjects } from "@/dal/projects.dal";
+import {  getAllPublicProjects } from "@/dal/projects.dal";
 import { iProject } from "@/types/database";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectsPage() {
-  const projects:iProject[] = await getAllProjects()
+  const projects:iProject[] = await getAllPublicProjects()
   
   const projectSchema = {
     "@context": "https://schema.org",

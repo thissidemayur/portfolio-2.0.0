@@ -8,6 +8,7 @@ import TechnicalSpecs from "@/components/projects/TechnicalSpecs";
 import { getProjectByItSlug } from "@/dal/projects.dal";
 import { iProject } from "@/types/database";
 import { ProjectStory } from "@/components/projects/ProjectStory";
+import { getPublicBlogBySlug } from "@/dal/blogs.dal";
 
 // Update the Props interface for Next.js 15
 interface Props {
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectSlugPage({ params }: Props) {
   // Await the params here
   const { slug } = await params;
-  const project: iProject = await getProjectByItSlug(slug);
+  const project: iProject = await getPublicBlogBySlug(slug);
 console.log("project: ",project)
   if (!project) {
     notFound();
