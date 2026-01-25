@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import { iCertificate } from "@/types/database";
+import { cacheTag } from "next/cache";
 
 
 export async function getAllCertificates(): Promise<iCertificate[]> {
@@ -111,3 +112,33 @@ export async function getCertificateById(id: number): Promise<iCertificate | nul
   }
 }
 
+
+// add public route for cahing strategies
+export async function getAllPublicCertificates(): Promise<iCertificate[]> {
+  'use cache'
+  cacheTag('certificates')
+  try {
+
+    const certs = await query(
+      "SELECT * FROM certificates ORDER BY issue_date DESC",
+    );
+    return certs.rows;
+  } catch (error) {
+    console.error("Error fetching all certificates:", error);
+    return [];
+  }
+}
+
+export async function getPublicFeaturedCertificates(): Promise<iCertificate[]> {
+  'use cache'
+  cacheTag("certificates");
+  try {
+    const certs = await query(
+      "SELECT * FROM certificates WHERE show_on_home = true OR is_industry_standard = true ORDER BY issue_date DESC LIMIT 4",
+    );
+    return certs.rows;
+  } catch (error) {
+    console.error("Error fetching featured certificates:", error);
+    return [];
+  }
+}
