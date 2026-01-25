@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import CertificationList from "@/components/certifications/CertificationList";
-import { getAllCertificates } from "@/dal/certificates.dal";
+import {  getAllPublicCertificates } from "@/dal/certificates.dal";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CertificationPage() {
-  const allCerts = await getAllCertificates();
+  const allCerts = await getAllPublicCertificates();
   const certSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
