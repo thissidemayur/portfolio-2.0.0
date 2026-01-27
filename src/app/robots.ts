@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["app/admin","app/admin/*"],
+      disallow: ["/admin", "/admin/*"],
     },
-    sitemap: "'https://thissidemayur.me/sitemap.xml",
+    sitemap: "https://thissidemayur.me/sitemap.xml",
   };
 }
