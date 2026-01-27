@@ -13,6 +13,12 @@ import {
   Award,
   Eye,
 } from "lucide-react";
+import {
+  UseFormRegister,
+  FieldValues,
+  UseFormRegisterReturn,
+} from "react-hook-form";
+
 import { iCertificate } from "@/types/database";
 import Link from "next/link";
 import {
@@ -38,8 +44,9 @@ const certSchema = z.object({
     .url("Must be a valid URL")
     .optional()
     .or(z.literal("")),
-  is_industry_standard: z.boolean().default(false),
-  show_on_home: z.boolean().default(false),
+  // FIX: Remove .default() to satisfy the Resolver type
+  is_industry_standard: z.boolean(),
+  show_on_home: z.boolean(),
 });
 
 type CertFormValues = z.infer<typeof certSchema>;
@@ -85,11 +92,11 @@ export default function CertificateForm({
       isEdit && cert
         ? await updateCertAction(cert.id, data)
         : await createCertAction(data);
-    if (result.success) {
+    if (result?.success ) {
       router.push("/admin/certifications");
       router.refresh();
     } else {
-      alert(result.error || "Operation failed");
+      alert(result?.error || "Operation failed");
     }
   };
 
@@ -302,8 +309,14 @@ export default function CertificateForm({
   );
 }
 
+
+interface ToggleSwitchProps {
+  label: string;
+  description: string;
+  register: UseFormRegisterReturn;
+}
 // Sub-components
-function ToggleSwitch({ label, description, register }: any) {
+function ToggleSwitch({ label, description, register }: ToggleSwitchProps) {
   return (
     <div className="flex items-center justify-between group cursor-pointer">
       <div className="space-y-1">
