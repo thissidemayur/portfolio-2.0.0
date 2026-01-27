@@ -7,15 +7,20 @@ import { NavigationDock } from "@/components/home/NavigationDock";
 import { PreloadResources } from "./preload-resources";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
-
+import ProgressProvider from "@/components/providers/ProgressProvider";
+import { Suspense } from "react";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display:"swap",
+  adjustFontFallback:true
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display:"swap",
+  adjustFontFallback:true
 });
 
 export const metadata: Metadata = {
@@ -62,6 +67,9 @@ export const metadata: Metadata = {
     "Tech Jobs",
     "Onsite Jobs",
     "Resume",
+    "Freelancer",
+    "Devops Jobs",
+    "full stack job",
   ],
   authors: [{ name: "Mayur Pal" }, { name: "thissidemayur" }],
   creator: "Mayur Pal",
@@ -112,20 +120,24 @@ export const metadata: Metadata = {
     canonical: "https://thissidemayur.me", // for canonical url to prevent duplicate content issues
     // languages
     //  types- rss+xml(rss-really simple syndication is a type of web feed which allows users and applications to access updates to websites in a standardized, computer-readable format.)
-  },
-  // applinks- use to
-  appLinks: {
-    web: {
-      url: "https://thissidemayur.me",
-      should_fallback: true,
+    types: {
+      "application/rss+xml": [
+        { url: "/rss.xml", title: "Mayur Pal | Engineering Feed" },
+      ],
     },
-    // ios and android can be added later- once app is developed
   },
+
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
+  },
+  manifest: "/site.webmanifest",
   category: "technology",
   bookmarks: "https://thissidemayur.me",
-  assets: [
-    // cloudinary || aws s3 pdf
-  ],
+
   facebook: {
     appId: " ",
   },
@@ -133,12 +145,11 @@ export const metadata: Metadata = {
     richPin: true,
   },
   generator: "Next.js",
-  formatDetection:{
-    telephone:false,
-    email:false,
-    address:false
-    
-  }
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
 };
 
 export default function RootLayout({
@@ -196,7 +207,7 @@ export default function RootLayout({
         "@id": "https://thissidemayur.me/#organization",
         name: "Mayur Pal | Dev & DevOps Portfolio",
         url: "https://thissidemayur.me",
-        logo: "https://thissidemayur.me/icon-512.png",
+        logo: "https://thissidemayur.me/logo-512.png",
         founder: { "@id": "https://thissidemayur.me/#person" },
       },
       {
@@ -215,18 +226,21 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <PreloadResources />
-        <SystemShell>
-          {children}
+        <Suspense fallback={null}>
+          <ProgressProvider>
+            <SystemShell>
+              {children}
 
-          <Footer />
-          <NavigationDock/>
-          <HireMeButton/>
-          <Toaster closeButton richColors position="top-right"/>
-
-        </SystemShell>
+              <Footer />
+              <NavigationDock />
+              <HireMeButton />
+            </SystemShell>
+          </ProgressProvider>
+              <Toaster closeButton richColors position="top-right" />
+        </Suspense>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{__html:JSON.stringify(globalSchema)}}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(globalSchema) }}
         />
       </body>
     </html>
