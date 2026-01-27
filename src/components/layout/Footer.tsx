@@ -1,11 +1,7 @@
-"use client";
-import React from "react";
-import { Github, Linkedin, Mail, Twitter, Terminal, Zap } from "lucide-react";
+import { Github, Linkedin, Mail, Terminal, Zap } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="w-full bg-[#050505] border-t border-white/5 pt-20 pb-10 px-6 relative overflow-hidden">
       {/* Background Decorative Glow */}
@@ -49,16 +45,16 @@ export default function Footer() {
                   href="/blogs"
                   className="hover:text-blue-400 transition-colors"
                 >
-                  Technical Wiki
+                  Blogs
                 </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/about"
                   className="hover:text-blue-400 transition-colors"
                 >
-                  Philosophy
-                </a>
+                  About
+                </Link>
               </li>
             </ul>
           </nav>
@@ -84,6 +80,7 @@ export default function Footer() {
                 <Linkedin size={20} />
               </a>
               <a
+              
                 href="mailto:your@email.com"
                 aria-label="Email"
                 className="hover:text-white transition-colors"
@@ -97,7 +94,9 @@ export default function Footer() {
         {/* Bottom Bar: System Metadata */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4 text-[10px] font-mono text-white/20 uppercase tracking-widest">
-            <span>&copy; {currentYear} All Rights Reserved</span>
+            <span suppressHydrationWarning>
+              &copy; {"2026"} All Rights Reserved
+            </span>
             <span className="hidden md:block">|</span>
             <span className="flex items-center gap-1.5">
               <Zap size={10} className="text-blue-500" />
@@ -106,11 +105,11 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-2 text-[10px] font-mono text-white/10 uppercase">
-            <span>Next.js 15</span>
+            <span>Next.js 16</span>
             <span>•</span>
             <span>AWS_MUM_Node</span>
             <span>•</span>
-            <span className="text-white/30">v1.2.0-beta</span>
+            <span className="text-white/30">v2.0.0</span>
           </div>
         </div>
       </div>
