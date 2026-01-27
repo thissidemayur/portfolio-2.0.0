@@ -59,7 +59,12 @@ export default function MessageRow({ msg }: { msg: IMsg }) {
           <div className="lg:w-1/4 flex items-center justify-between lg:justify-end gap-4 border-t border-white/5 lg:border-none pt-4 lg:pt-0">
             <div className="flex items-center gap-2 text-white/10 text-[9px] font-mono lg:hidden">
               <Clock size={10} />
-              <span>{new Date(msg.received_at).toLocaleDateString()}</span>
+              <span suppressHydrationWarning>
+                {new Date(msg.received_at)
+                  .toISOString()
+                  .replace("T", " ")
+                  .substring(0, 16)}
+              </span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -102,7 +107,10 @@ export default function MessageRow({ msg }: { msg: IMsg }) {
                 </span>
                 <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest flex items-center gap-2">
                   <Clock size={10} />{" "}
-                  {new Date(msg.received_at).toLocaleString()}
+                  {new Date(msg.received_at)
+                    .toISOString()
+                    .replace("T", " ")
+                    .substring(0, 16)}{" "}
                 </span>
               </div>
               <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap font-medium">
