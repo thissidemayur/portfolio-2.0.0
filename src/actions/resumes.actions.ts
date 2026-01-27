@@ -8,7 +8,6 @@ import {
 } from "@/dal/resumes.dal";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { ResumeType, iResume } from "@/types/database";
-import { da } from "zod/v4/locales";
 
 
 export async function uploadResumeAction(
