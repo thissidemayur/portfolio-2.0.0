@@ -1,48 +1,20 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-
-import BlogHeader from "@/components/blog/BlogHeader";
+import NotFound from "@/app/not-found";
 import BlogContent from "@/components/blog/BlogContent";
 import BlogFooter from "@/components/blog/BlogFooter";
-import { getBlogBySlug, getPublicBlogBySlug } from "@/dal/blogs.dal";
+import BlogHeader from "@/components/blog/BlogHeader";
+import { getPublicBlogBySlug } from "@/dal/blogs.dal";
 import { iBlog } from "@/types/database";
+import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-// Next.js 15 uses a Promise for params
-interface Props {
-  params: Promise<{ slug: string }>;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = await params;
   const post: iBlog = await getPublicBlogBySlug(slug);
-
-  if (!post) return { title: "Post Not Found" };
-
-  return {
-    title: `${post.title} | Mayur Pal`,
-    description: post.summary, // Summary is better for SEO than full content
-    alternates: { canonical: `https://thissidemayur.me/blogs/${slug}` },
-    openGraph: {
-      title: post.title,
-      description: post.summary,
-      type: "article",
-      publishedTime:
-        post.published_at instanceof Date
-          ? post.published_at.toISOString()
-          : post.published_at,
-      authors: ["Mayur Pal"],
-      images: [post.image_url],
-    },
-  };
-}
-
-export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params;
-  const post: iBlog = await getBlogBySlug(slug);
-
-  if (!post) notFound();
 
   // Unified Schema Structure
   const jsonLd = {
@@ -92,49 +64,70 @@ export default async function BlogPostPage({ params }: Props) {
       },
     ],
   };
+  if (!post) NotFound();
 
   return (
-    <article className="min-h-screen bg-[#050505] text-white pt-32 pb-24 selection:bg-blue-500/30">
+    <article className="min-h-screen bg-[#050505] text-white pt-24 pb-24 selection:bg-blue-500/30">
+      <div className="max-w-4xl mx-auto px-6">
+        {/* Navigation */}
+        <nav className="mb-8 flex justify-between items-center">
+          <Link
+            href="/blogs"
+            className="group flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[10px] font-mono tracking-[0.3em] uppercase"
+          >
+            <ArrowLeft
+              size={12}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            Back
+          </Link>
+          <span className="text-[8px] font-mono text-white/10 uppercase tracking-[0.5em]">
+            Entry_Node: {post.id}
+          </span>
+        </nav>
+
+        {/* Cover Image Section */}
+        <div className="relative aspect-[21/9] w-full mb-16 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
+          <Image
+            src={post.image_url}
+            alt={post.title}
+            fill
+            priority
+            className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60" />
+        </div>
+
+        {/* Header Section */}
+        <div className="max-w-3xl mx-auto">
+          <BlogHeader
+            title={post.title}
+            date={
+              post.published_at instanceof Date
+                ? post.published_at.toISOString()
+                : post.published_at
+            }
+            readingTime="5"
+            tags={[post.category]}
+          />
+
+          {/* Main Content Area */}
+          <main className="mt-16">
+            <BlogContent content={post.content} />
+          </main>
+
+          {/* Footer */}
+          <footer className="mt-24 pt-16 border-t border-white/5">
+            <BlogFooter />
+          </footer>
+        </div>
+      </div>
+
+      {/* Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
-      <div className="max-w-3xl mx-auto px-6">
-        <nav className="mb-12">
-          <Link
-            href="/blogs"
-            className="group flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[10px] font-mono tracking-widest uppercase"
-          >
-            <ArrowLeft
-              size={14}
-              className="group-hover:-translate-x-1 transition-transform"
-            />
-            Back_To_Logs
-          </Link>
-        </nav>
-
-        {/* Note: Reading time and tags are derived or hardcoded since they aren't in your SQL iBlog interface yet */}
-        <BlogHeader
-          title={post.title}
-          date={
-            post.published_at instanceof Date
-              ? post.published_at.toISOString()
-              : post.published_at
-          }
-          readingTime="5" // Hardcoded or calculated
-          tags={[post.category]} // Wrapping your BlogType in an array
-        />
-
-        <main className="mt-12">
-          <BlogContent content={post.content} />
-        </main>
-
-        <footer className="mt-24">
-          <hr className="border-white/10 mb-16" />
-          <BlogFooter />
-        </footer>
-      </div>
     </article>
   );
 }

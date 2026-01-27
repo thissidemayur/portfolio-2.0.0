@@ -51,11 +51,6 @@ export default async function BlogPage() {
 
   return (
     <main className="min-h-screen bg-[#050505] pt-8 pb-24 px-6">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPageSchema) }}
-      />
-
       <div className="max-w-7xl mx-auto">
         <header className="mb-20 space-y-6">
           <nav className="mb-2">
@@ -71,8 +66,7 @@ export default async function BlogPage() {
             </Link>
           </nav>
           {/* Simple explanation for Non-Tech visitors */}
-          <div className="flex items-center gap-3 text-emerald-500 font-mono text-[10px] uppercase tracking-[0.5em] font-black">
-          </div>
+          <div className="flex items-center gap-3 text-emerald-500 font-mono text-[10px] uppercase tracking-[0.5em] font-black"></div>
           <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter italic">
             Technical <span className="text-white/20">Journal</span>
           </h1>
@@ -86,6 +80,10 @@ export default async function BlogPage() {
         {/* This component handles the search and category sorting */}
         <BlogFilters initialPosts={posts} />
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPageSchema) }}
+      />
     </main>
   );
 }

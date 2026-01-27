@@ -7,12 +7,16 @@ import { iBlog } from "@/types/database"; // Use your actual interface
 export default function BlogCard({ post, idx }: { post: iBlog; idx: number }) {
   const isTech = post.category === "TECHNICAL";
 
+  // If it's one of the first two cards, don't animate the entrance to save LCP
+  const isAboveFold = idx < 2;
+
+
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: idx * 0.1 }}
-      whileHover={{ y: -8 }}
+      initial={isAboveFold ? false : { opacity: 0, y: 20 }}
+      animate={isAboveFold ? { opacity: 1, y: 0 } : undefined}
+      whileInView={isAboveFold ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true }}
       className={`group p-8 bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] flex flex-col transition-all duration-500 hover:border-blue-500/30 ${
         post.is_featured ? "md:col-span-2 bg-blue-500/[0.01]" : ""
       }`}
@@ -56,13 +60,17 @@ export default function BlogCard({ post, idx }: { post: iBlog; idx: number }) {
           <span className="flex items-center gap-1.5">
             <Clock size={12} /> 5 min read
           </span>
-          <time dateTime={new Date(post.published_at).toISOString()}>
-            {new Date(post.published_at).toLocaleDateString()}
-          </time>
+          <time
+            suppressHydrationWarning
+            dateTime={new Date(post.published_at).toLocaleDateString()}
+          ></time>
         </div>
-        <div className="p-3 bg-white/5 rounded-full group-hover:bg-blue-500 group-hover:text-white transition-all">
+        <Link
+          href={`/blogs/${post.slug}`}
+          className="p-3 bg-white/5 rounded-full group-hover:bg-blue-500 group-hover:text-white transition-all"
+        >
           <ArrowUpRight size={18} />
-        </div>
+        </Link>
       </footer>
     </motion.article>
   );
