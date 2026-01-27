@@ -3,6 +3,7 @@
 import {
   addTechnology,
   deleteTechnologyById,
+  toggleMainStackById,
   updateTechnologyById,
 } from "@/dal/tech.dal";
 import { revalidatePath, revalidateTag } from "next/cache";
@@ -53,5 +54,22 @@ export async function deleteTechAction(id: number) {
       success: false,
       error: "Cannot delete: Tech might be linked to projects",
     };
+  }
+}
+
+export async function toggleMainStackAction(id: number, isMain: boolean) {
+  try {
+    await toggleMainStackById(id, isMain);
+
+    revalidateTag("technologies","max");
+
+    revalidatePath("/");
+
+    revalidatePath("/projects");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Main Stack Toggle Error:", error);
+    return { success: false, error: "Failed to update stack status" };
   }
 }
