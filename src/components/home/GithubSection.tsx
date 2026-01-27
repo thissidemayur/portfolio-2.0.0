@@ -3,10 +3,8 @@ import React, { useState, useMemo } from "react";
 import {GitHubCalendar} from "react-github-calendar"; // Note: removed curly braces if default export
 import { Calendar, Activity } from "lucide-react";
 
-export function GithubSection() {
-  // 1. WHY: useMemo for Constants
-  // BENEFIT: Prevents the array from being re-created on every render.
-  const YEARS = useMemo(() => [2026, 2025, 2024], []);
+export  function GithubSection() {
+ const YEARS = useMemo(() => [2026, 2025, 2024], []);
 
   const [selectedYear, setSelectedYear] = useState(YEARS[0]);
 

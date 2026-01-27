@@ -1,6 +1,4 @@
-// src/components/home/ActiveBentoGrid.tsx
 "use client";
-import React from "react";
 import { TechOrbital } from "@/components/home/titles/TechOrbital"; // Assuming you have this
 import HealthMonitor from "@/components/home/titles/HealthMonitor";
 import ProjectPortal from "@/components/home/titles/ProjectPortal";

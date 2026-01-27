@@ -9,7 +9,7 @@ import {
   ChevronRight,
   Activity,
 } from "lucide-react";
-import { HireMayurExpandableButton } from "./HireMayurButton";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -69,7 +69,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="space-y-6 border-l-2 border-blue-500/20 pl-8 mb-10"
+              className="space-y-6 border-l-2 border-blue-500/20  mb-10"
             >
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl leading-relaxed">
                 I’m{" "}
@@ -96,16 +96,27 @@ export default function Hero() {
               className="space-y-8"
             >
               {/* PRIMARY BUTTONS */}
-              <div className="flex flex-wrap gap-4">
-                {/* HIRE ME - The Main Call to Action */}
+              <div className="flex flex-row items-center gap-3 w-full max-w-full overflow-hidden">
+                {/* PRIMARY ACTION: ESTABLISH_CONNECTION */}
+                <Link
+                  href="/contact"
+                  className="flex-1 group flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-blue-600 text-white font-black text-[9px] md:text-[10px] uppercase tracking-widest md:tracking-[0.2em] transition-all hover:bg-blue-700 shadow-[0_15px_30px_rgba(37,99,235,0.3)] hover:scale-[1.02] active:scale-95"
+                >
+                  <span className="truncate">ESTABLISH_CONNECTION</span>
+                  <ChevronRight
+                    size={14}
+                    className="shrink-0 group-hover:translate-x-1 transition-transform"
+                  />
+                </Link>
 
-                <HireMayurExpandableButton />
-
-                {/* RESUME - The Secondary Action */}
-                <button className="group px-8 py-4 rounded-lg border border-white/10 bg-white/5 text-white font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-2">
-                  <Terminal size={14} className="text-blue-400" />
-                  Get_Resume.pdf
-                </button>
+                {/* SECONDARY ACTION: RESUME */}
+                <Link
+                  href="/resume"
+                  className="flex-1 group flex items-center justify-center gap-2 px-4 py-4 rounded-xl border border-white/10 bg-white/5 text-white font-bold text-[9px] md:text-xs uppercase tracking-widest hover:bg-white/10 transition-all hover:cursor-pointer"
+                >
+                  <Terminal size={14} className="shrink-0 text-blue-400" />
+                  <span className="truncate">Resume.pdf</span>
+                </Link>
               </div>
             </motion.div>
           </div>

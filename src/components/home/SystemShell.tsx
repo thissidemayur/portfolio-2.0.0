@@ -1,6 +1,3 @@
-// src/components/layout/SystemShell.tsx
-"use client";
-import { motion } from "framer-motion";
 import React from "react";
 
 export default function SystemShell({ children }: { children: React.ReactNode }) {
