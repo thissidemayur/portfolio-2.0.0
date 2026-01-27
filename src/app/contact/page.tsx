@@ -1,9 +1,22 @@
 import { Metadata } from "next";
-import ContactForm from "@/components/contact/contactform";
-import { MapPin, Clock, Github, Linkedin, Mail, ArrowLeft } from "lucide-react";
- import { Instagram, Twitter } from "lucide-react";
-import Link from "next/link";
+import { Clock} from "lucide-react";
+import {  Github, } from "lucide-react";
+import {  Linkedin } from "lucide-react";
+import { Mail } from "lucide-react";
+import {  ArrowLeft } from "lucide-react";
 
+
+import { MapPin } from "lucide-react";
+ import { Instagram } from "lucide-react";
+ import { Twitter } from "lucide-react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+const ContactForm = dynamic(() => import("@/components/contact/contactform"), {
+  ssr: true,
+  loading: () => (
+    <div className="h-96 bg-white/5 animate-pulse rounded-[3rem]" />
+  ),
+});
  const SOCIAL_LINKS = [
    {
      label: "GitHub",
@@ -88,10 +101,6 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-[#050505] text-white py-8 pb-24 px-6 selection:bg-emerald-500/30">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
-      />
       <div className="max-w-7xl mx-auto">
         <nav className="mb-12">
           <Link
@@ -167,6 +176,10 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
     </main>
   );
 }
