@@ -1,278 +1,323 @@
--- 1. SEED Technologies 
-INSERT INTO technologies (name,category,icon_slug,is_main_stack)
-VALUES 
-('Go', 'languages & runtimes', 'cpu', true),
-('TypeScript', 'languages & runtimes', 'code', true),
-('C', 'languages & runtimes', 'terminal', true),
-('C++', 'languages & runtimes', 'terminal', true),
-('JavaScript', 'languages & runtimes', 'terminal', true),
-('BashScript', 'languages & runtimes', 'terminal', true),
+INSERT INTO technologies (name, category, is_main_stack) VALUES
+-- Programming Languages
+('C', 'PROGRAMMING_LANGUAGES', false),
+('C++', 'PROGRAMMING_LANGUAGES', false),
+('JavaScript', 'PROGRAMMING_LANGUAGES', true),
+('TypeScript', 'PROGRAMMING_LANGUAGES', true),
+('Golang', 'PROGRAMMING_LANGUAGES', true),
+('Bash Scripting', 'PROGRAMMING_LANGUAGES', true),
 
-('Next.js', 'frontend', 'layers', true),
-('TailwindCSS', 'frontend', 'palette', true),
-('React', 'frontend', 'react', true),
-('Redux', 'frontend', 'redux', true),
-('zustand', 'frontend', 'database', true),
+-- Frontend
+('React', 'FRONTEND', true),
+('Next.js', 'FRONTEND', true),
+('Tailwind', 'FRONTEND', true),
+('Shadcn', 'FRONTEND', true),
+('Zustand', 'FRONTEND', true),
+('RTK', 'FRONTEND', false),
+('React Hook Form', 'FRONTEND', false),
 
-('Node.js', 'backend', 'nodejs', true),
-('Express.js', 'backend', 'express', true),
-('Rest API', 'backend', 'api', true),
+-- Backend
+('Express', 'BACKEND', true),
+('Golang HTTP Server', 'BACKEND', true),
+('Next-Auth', 'BACKEND', true),
+('Cloudinary', 'BACKEND', false),
+('Imginary', 'BACKEND', false),
+('REST API', 'BACKEND', true),
+('Reverse Proxy', 'BACKEND', false),
+('Nginx', 'BACKEND', true),
 
-('MongoDB', 'database & ORMs', 'mongodb', true),
-('Mongoose', 'database & ORMs', 'database', true),
-('Prisma', 'database & ORMs', 'database', true),
-('PostgreSQL', 'database & ORMs', 'database', true),
-('Redis', 'database & ORMs', 'zap', true),
+-- Database & ORM
+('PostgreSQL', 'DB_ORM', true),
+('MongoDB', 'DB_ORM', false),
+('Prisma', 'DB_ORM', true),
+('Mongoose', 'DB_ORM', false),
+('Redis', 'DB_ORM', true),
 
-('Docker', 'devops', 'container', true),
-('AWS', 'devops', 'cloud', true),
-('Terraform', 'devops', 'box', true),
-('GitHub Actions', 'devops', 'github', true),
+-- Infrastructure (AWS)
+('EC2', 'INFRASTRUCTURE(aws)', true),
+('ECS', 'INFRASTRUCTURE(aws)', true),
+('IAM', 'INFRASTRUCTURE(aws)', true),
+('S3', 'INFRASTRUCTURE(aws)', true),
+('Route 53', 'INFRASTRUCTURE(aws)', false),
+('VPC', 'INFRASTRUCTURE(aws)', true),
+('Terraform', 'INFRASTRUCTURE(aws)', true),
 
-('Git', 'tools', 'git', true),
-('Linux', 'tools', 'linux', true),
-('Postman', 'tools', 'postman', true),
-('GitHub', 'tools', 'github', true),
+-- DevOps
+('CI/CD', 'DEVOPS', true),
+('GitHub Actions', 'DEVOPS', true),
+('Docker', 'DEVOPS', true),
+('Git', 'DEVOPS', true),
+('GitHub', 'DEVOPS', true),
 
-('Other', 'other', 'question-mark-circle', true)
-ON CONFLICT (name) DO NOTHING;
+-- Tools
+('Linux', 'TOOLS', true),
+('Vim', 'TOOLS', true),
+('Postman', 'TOOLS', false)
+
+ON CONFLICT (name) DO UPDATE SET 
+    category = EXCLUDED.category,
+    is_main_stack = EXCLUDED.is_main_stack;
 
 
 
+DO $$ 
+DECLARE 
+    proj_id INT;
+BEGIN
+    INSERT INTO projects (
+        title, 
+        content, 
+        summary, 
+        image_url, 
+        repo_url, 
+        live_url,
+        slug, 
+        is_featured, 
+        problem_statement, 
+        solution_approach, 
+        key_learnings, 
+        challenges_faced
+    ) VALUES (
+        'Mayur_OS Portfolio v2.0.0',
+        '<h1>🚀 Engineering a High-Performance Portfolio System</h1>
+        <h2>The Challenge: Overcoming "Heavy" Client-Side Portfolios</h2>
+        <p>Traditional React-based portfolios often suffer from bloated JavaScript bundles, leading to high <strong>Total Blocking Time (TBT)</strong> and poor <strong>Largest Contentful Paint (LCP)</strong>. For a Systems Engineer, a slow site is a bad resume. This project was built to prove that a feature-rich CMS can still achieve sub-second performance.</p>
+        
+        <h2>🛠 Architectural Strategy</h2>
+        <h3>1. Performance Profiling & Main-Thread Optimization</h3>
+        <p>Using the <strong>Chrome DevTools Performance Tab</strong>, I identified that "Evaluate Script" tasks were the primary cause of high TBT.</p>
+        <ul>
+            <li><strong>The Solution:</strong> Implemented <strong>Dynamic Routing</strong> and selective <strong>Component Hydration</strong>.</li>
+            <li><strong>Result:</strong> Reduced the initial JavaScript payload by <strong>40%</strong>, moving heavy interactive elements off the critical rendering path.</li>
+        </ul>
 
--- 2. SEED PROJECTS
-INSERT INTO projects (
-    title, content, summary, image_url, live_url, repo_url, slug, 
-    is_featured, problem_statement, solution_approach, key_learnings, challenges_faced
-) VALUES 
-(
-    'Nexus Microservice Bridge',
-    'A deep dive into high-concurrency systems using Go...',
-    'High-performance system monitoring bridge for distributed nodes.',
-    '/projects/nexus.jpg',
-    'https://nexus-demo.com',
-    'https://github.com/thissidemayur/nexus-bridge',
-    'nexus-microservice-bridge',
+        <h3>2. Edge-Computing & Security with <code>jose</code></h3>
+        <p>To avoid the latency of traditional session databases, I implemented <strong>Edge Authentication</strong>.</p>
+        <ul>
+            <li><strong>Stateless Auth:</strong> Utilizing <code>jose</code> for JWT verification directly within <strong>Next.js Middleware</strong>.</li>
+            <li><strong>Secure Protocols:</strong> Admin access is governed by HTTP-only secure cookies, verified at the network edge to ensure unauthorized requests never even reach the server infrastructure.</li>
+        </ul>
+
+        <h3>3. SEO & Semantic Discovery</h3>
+        <p>Visibility is as important as performance. This system automates the technical SEO pipeline:</p>
+        <ul>
+            <li><strong>Semantic HTML:</strong> Pure Server Components ensure that search engine crawlers receive fully rendered HTML instantly.</li>
+            <li><strong>JSON-LD Integration:</strong> Automatically injects Schema.org structured data, allowing search engines to index the site as a professional entity.</li>
+            <li><strong>Metadata API:</strong> Dynamic OpenGraph and Twitter cards are generated server-side for every project slug.</li>
+        </ul>
+
+        <h2>📈 Impact Metrics</h2>
+        <ul>
+            <li><strong>Performance:</strong> 98/100 (Mobile) | 100/100 (Desktop) via Lighthouse.</li>
+            <li><strong>TBT:</strong> Reduced from 450ms to < 50ms.</li>
+            <li><strong>FCP:</strong> Sub-300ms on global 4G connections.</li>
+        </ul>',
+        'An SEO-engineered, Edge-authenticated portfolio system optimized for Core Web Vitals and sub-second performance.',
+        'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/projects/Screenshot+From+2026-01-27+11-22-54.png',
+        'https://github.com/thissidemayur/portfolio-2.0.0',
+        'thissidemayur.me',
+        'portfolio-engineering-v2',
+        true,
+        'High TBT and LCP in traditional React portfolios lead to poor UX and low SEO ranking.',
+        'Used Next.js 15 dynamic routing and Edge Auth (jose) with Chrome DevTools performance auditing to eliminate main-thread blocking.',
+        ARRAY['Performance Profiling with DevTools', 'Edge Middleware Auth', 'JSON-LD & Semantic SEO'],
+        ARRAY['Reducing Evaluate Script overhead', 'Optimizing FCP via selective hydration']
+    ) RETURNING id INTO proj_id;
+
+    INSERT INTO project_technologies (project_id, technology_id)
+    SELECT proj_id, id FROM technologies 
+    WHERE name IN ('Next.js', 'PostgreSQL', 'Docker', 'GitHub Actions', 'TypeScript');
+END $$;
+
+
+
+INSERT INTO resumes (
+    version_name, 
+    category, 
+    is_latest, 
+    summary, 
+    skills, 
+    experience, 
+    projects, 
+    achievements, 
+    education
+) VALUES (
+    'Mayur_Pal_DevOps_Fullstack_v1.0.4',
+    'FULLSTACK',
     true,
-    'Distributed nodes were experiencing 500ms latency in heartbeat sync.',
-    'Implemented a worker-pool pattern with custom TCP buffer management.',
-    ARRAY['Low-level networking in Go', 'Buffered channels', 'Zero-allocation JSON'],
-    ARRAY['TCP packet fragmentation', 'Managing race conditions']
-),
-(
-    'Sentinel Security Scanner',
-    'Automated vulnerability scanning for Docker images...',
-    'CLI tool to audit and secure containerized environments.',
-    '/projects/sentinel.jpg',
-    NULL,
-    'https://github.com/thissidemayur/sentinel-scanner',
-    'sentinel-security-scanner',
-    true,
-    'CI/CD pipelines lacked automated security gating for container layers.',
-    'Built a wrapper around Clair API with custom reporting in Markdown.',
-    ARRAY['Docker API integration', 'Static analysis', 'Go CLI development'],
-    ARRAY['Handling large JSON payloads', 'Recursive layer scanning']
-),
-(
-    'KubeOps Dashboard',
-    'Real-time Kubernetes cluster visualizer...',
-    'A fullstack dashboard to monitor pods and resource consumption.',
-    '/projects/kubeops.jpg',
-    'https://kubeops.dev',
-    'https://github.com/thissidemayur/kube-dash',
-    'kubeops-dashboard',
-    true,
-    'Standard kubectl output is too dense for quick visual health checks.',
-    'Used Next.js 15 Server Components to stream data from K8s API via WebSockets.',
-    ARRAY['Kubernetes Client-Go', 'WebSocket streaming', 'Next.js 15'],
-    ARRAY['API Rate limiting', 'Managing cluster permissions']
-),
-(
-    'Terraform State Guardian',
-    'Custom backend for Terraform state management...',
-    'Secure state storage with locking using PostgreSQL.',
-    '/projects/terraform.jpg',
-    NULL,
-    'https://github.com/thissidemayur/tf-guardian',
-    'terraform-state-guardian',
-    false,
-    'Shared S3 backends were causing occasional state corruption in large teams.',
-    'Implemented an HTTP backend in Go with Postgres Row-Level Security.',
-    ARRAY['Infrastructure as Code', 'RLS in Postgres', 'Atomic locking'],
-    ARRAY['Handling concurrent state locks', 'Data consistency']
-),
-(
-    'Vortex Cache Engine',
-    'Distributed LRU cache with Redis integration...',
-    'Sub-millisecond latency cache for high-traffic API endpoints.',
-    '/projects/vortex.jpg',
-    NULL,
-    'https://github.com/thissidemayur/vortex-cache',
-    'vortex-cache-engine',
-    true,
-    'Database bottlenecks were slowing down the main API during peak hours.',
-    'Developed a tiered caching strategy (In-memory + Redis backup).',
-    ARRAY['Cache eviction algorithms', 'Redis TTL strategies', 'Memory management'],
-    ARRAY['Cache stampede prevention', 'Invalidation logic']
-)
-ON CONFLICT (slug) DO NOTHING;
-
--- 3. LINK PROJECTS TO TECHNOLOGIES
--- Linking Project 1
-INSERT INTO project_technologies (project_id, technology_id)
-SELECT p.id, t.id FROM projects p, technologies t 
-WHERE p.slug = 'nexus-microservice-bridge' AND t.name IN ('Go', 'Docker', 'PostgreSQL')
-ON CONFLICT DO NOTHING;
-
--- Linking Project 2
-INSERT INTO project_technologies (project_id, technology_id)
-SELECT p.id, t.id FROM projects p, technologies t 
-WHERE p.slug = 'sentinel-security-scanner' AND t.name IN ('Go', 'Docker', 'Bash')
-ON CONFLICT DO NOTHING;
-
--- Linking Project 3
-INSERT INTO project_technologies (project_id, technology_id)
-SELECT p.id, t.id FROM projects p, technologies t 
-WHERE p.slug = 'kubeops-dashboard' AND t.name IN ('Next.js', 'TypeScript', 'Docker', 'AWS')
-ON CONFLICT DO NOTHING;
-
--- Linking Project 4
-INSERT INTO project_technologies (project_id, technology_id)
-SELECT p.id, t.id FROM projects p, technologies t 
-WHERE p.slug = 'terraform-state-guardian' AND t.name IN ('Go', 'PostgreSQL', 'Terraform')
-ON CONFLICT DO NOTHING;
-
--- Linking Project 5
-INSERT INTO project_technologies (project_id, technology_id)
-SELECT p.id, t.id FROM projects p, technologies t 
-WHERE p.slug = 'vortex-cache-engine' AND t.name IN ('Go', 'Redis', 'PostgreSQL')
-ON CONFLICT DO NOTHING;
-
-
+    -- Summary: TEXT[]
+    ARRAY[
+        'Full-Stack & DevOps Engineer specializing in high-performance web systems and edge-native architecture.',
+        'Architect of Portfolio 1.0.0, a system engineered for sub-300ms FCP and optimized Core Web Vitals via manual Main-Thread auditing.'
+    ],
+    -- Skills: JSONB (iSkillGroup[])
+    '[
+        {"category": "Programming Languages", "items": ["Go", "TypeScript", "JavaScript", "C++", "Bash"]},
+        {"category": "Frontend", "items": ["Next.js 15", "React", "Tailwind CSS", "Zustand", "Shadcn/UI"]},
+        {"category": "Backend & DB", "items": ["Golang HTTP", "Node.js", "PostgreSQL", "Redis", "Prisma"]},
+        {"category": "Infrastructure & DevOps", "items": ["AWS (ECS, S3, EC2)", "Docker", "Terraform", "GitHub Actions", "Nginx"]}
+    ]'::JSONB,
+    -- Experience: JSONB
+    '[
+        {
+            "company": "Personal Engineering Lab",
+            "role": "Systems Architect & Developer",
+            "duration": "2024 - Present",
+            "location": "Remote",
+            "points": [
+                "Built a custom headless CMS using Next.js Server Actions and Raw SQL to eliminate ORM overhead.",
+                "Implemented Edge-native authentication using jose, reducing auth latency by executing logic at the network edge.",
+                "Optimized critical rendering paths using Chrome DevTools Performance auditing to break up heavy Evaluate Script tasks."
+            ]
+        }
+    ]'::JSONB,
+    -- Projects: JSONB (Including your Portfolio 1.0.0)
+    '[
+        {
+            "title": "Mayur_OS Portfolio v1.0.4",
+            "tech": "Next.js 15, PostgreSQL, jose (Edge Auth), Docker, AWS",
+            "details": [
+                "Achieved 95+ Lighthouse scores by implementing a Dynamic Bridge Pattern for client components.",
+                "Reduced initial JS payload by ~40% through selective hydration and route-based code splitting.",
+                "Integrated JSON-LD (Linked Data) for automated technical SEO and semantic crawlability."
+            ],
+            "link": "https://github.com/thissidemayur/portfolio-2.0.0"
+        },
+        {
+            "title": "Terraform State Guardian",
+            "tech": "Go, PostgreSQL, Terraform",
+            "details": [
+                "Developed a custom HTTP backend for Terraform state management with PostgreSQL row-level security.",
+                "Implemented atomic state locking to prevent concurrency corruption in multi-dev environments."
+            ],
+            "link": "https://github.com/thissidemayur/tf-guardian"
+        }
+    ]'::JSONB,
+    -- Achievements: JSONB
+    '["Engineered a sub-300ms FCP Portfolio System", "Automated Infrastructure deployment using Terraform & AWS ECS"]'::JSONB,
+    -- Education: JSONB
+    '[
+        {
+            "institution": "Lovely Professional University (LPU)",
+            "degree": "B.Tech in Computer Science",
+            "score": "8.5 CGPA",
+            "location": "Punjab, India",
+            "duration": "2022 - 2026"
+        }
+    ]'::JSONB
+);
 
 
 
 
 
 -- 4. SEED Certificates
+-- 4. SEED Certificates (Updated S3 Paths)
 INSERT INTO certificates (
-    title, issuer, issue_date, expiry_date, image_url, verify_link, slug, credential_url, is_industry_standard
+    title, 
+    issuer, 
+    issue_date, 
+    image_url, 
+    verify_link, 
+    slug, 
+    is_industry_standard, 
+    show_on_home
 ) VALUES 
 (
-    'AWS Certified Solutions Architect – Associate', 'Amazon Web Services', 
-    '2024-01-15', '2027-01-15', '/certs/aws-saa.png', 
-    'https://aws.amazon.com/verification', 'aws-solutions-architect', 
-    'AWS-SEC-12345', true
+    'Postman API Fundamentals Student Expert',
+    'Postman',
+    '2025-05-16',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/apiFundamental.webp',
+    'https://badges.parchment.com/public/assertions/IA6_OOSJRL-bP4cnYrFDCQ?identity__email=mayurpal7890@gmail.com',
+    'postman-api-fundamentals',
+    true,
+    true
 ),
 (
-    'CKA: Certified Kubernetes Administrator', 'The Linux Foundation', 
-    '2024-05-20', NULL, '/certs/cka.png', 
-    'https://creatly.com/verify/cka', 'certified-kubernetes-administrator', 
-    'LF-88990', true
+    'Introduction to Software Engineering',
+    'Coursera (IBM)',
+    '2024-09-27',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/swEngineering.webp',
+    'https://www.coursera.org/account/accomplishments/verify/B7A6FJZJ7WLG',
+    'intro-to-software-engineering',
+    true,
+    true
 ),
 (
-    'HashiCorp Certified: Terraform Associate', 'HashiCorp', 
-    '2023-11-10', '2025-11-10', '/certs/terraform.png', 
-    'https://credly.com/h-terraform', 'terraform-associate', 
-    'HC-5544', true
+    'Javascript (Basic)',
+    'HackerRank',
+    '2025-02-01',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/js.webp',
+    'https://www.hackerrank.com/certificates/iframe/9493f995ff51',
+    'hackerrank-javascript-basic',
+    true,
+    false
 ),
 (
-    'Meta Front-End Developer Professional Certificate', 'Meta', 
-    '2023-06-01', NULL, '/certs/meta-frontend.png', 
-    'https://coursera.org/verify/meta', 'meta-frontend-dev', 
-    'META-FE-99', false
+    'C for Everyone: Programming Fundamentals',
+    'University of California (via Coursera)',
+    '2024-09-22',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/cLang.webp',
+    'https://www.coursera.org/account/accomplishments/verify/HFQQAEPHMDRR',
+    'c-programming-fundamentals',
+    false,
+    false
 ),
 (
-    'Google Cloud Digital Leader', 'Google Cloud', 
-    '2023-02-14', NULL, '/certs/gcp-digital.png', 
-    'https://google.com/verify/gcp', 'gcp-digital-leader', 
-    'GCP-DL-101', true
+    'Practise Go',
+    'CodeChef',
+    '2025-05-18',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/golang.webp',
+    'https://www.codechef.com/certificates/public/bce89ef',
+    'codechef-practise-go',
+    false,
+    true
 ),
 (
-    'CompTIA Security+', 'CompTIA', 
-    '2024-08-01', '2027-08-01', '/certs/security-plus.png', 
-    'https://comptia.org/verify', 'comptia-security-plus', 
-    'COMP-SEC-77', true
-),
-(
-    'PostgreSQL Advanced Optimization', 'EDB', 
-    '2025-01-10', NULL, '/certs/postgres-adv.png', 
-    'https://edb.com/verify', 'postgres-advanced-optimization', 
-    'EDB-PG-500', false
-),
-(
-    'Docker Certified Associate', 'Docker / Mirantis', 
-    '2023-04-12', '2025-04-12', '/certs/docker-cert.png', 
-    'https://docker.com/verify', 'docker-certified-associate', 
-    'DOCK-667', true
-),
-(
-    'Red Hat Certified System Administrator (RHCSA)', 'Red Hat', 
-    '2024-09-15', NULL, '/certs/rhcsa.png', 
-    'https://redhat.com/verify', 'rhcsa-redhat', 
-    'RH-990-11', true
-),
-(
-    'Advanced Go Programming', 'Ardan Labs', 
-    '2025-12-01', NULL, '/certs/go-advanced.png', 
-    'https://ardanlabs.com/verify', 'advanced-go-programming', 
-    'GO-ADV-202', false
+    'Introduction to HTML, CSS, & JavaScript',
+    'Coursera (IBM)',
+    '2024-10-02',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/htmlCssJS.webp',
+    'https://www.coursera.org/account/accomplishments/verify/J748XXN6J1FF',
+    'intro-to-web-development',
+    true,
+    false
 )
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+    image_url = EXCLUDED.image_url,
+    verify_link = EXCLUDED.verify_link,
+    show_on_home = EXCLUDED.show_on_home;
+
 
 
 
 -- 5. Blogs
-INSERT INTO blogs (title, content, summary, image_url, slug, category, is_featured, published_at) VALUES 
--- TECHNICAL BLOGS (System & Backend)
-('Understanding Go Scheduler internals', 'The G-P-M model explained...', 'A deep dive into how Go manages concurrency at the OS level.', '/blogs/go-scheduler.jpg', 'go-scheduler-internals', 'technical', true, '2025-10-01'),
-('PostgreSQL Indexing: The Hidden Performance Killer', 'Why your B-Trees aren''t working...', 'How to optimize raw SQL queries for high-scale applications.', '/blogs/postgres-indexing.jpg', 'postgres-indexing-performance', 'technical', true, '2025-11-05'),
-('Architecting a High-Performance Caching Layer', 'Using Redis vs Memcached...', 'Step-by-step guide to building a sub-millisecond data access layer.', '/blogs/caching-layer.jpg', 'high-performance-caching', 'technical', false, '2025-11-12'),
-('Next.js 15: Mastering Server Components', 'The shift from client-side to server...', 'How to leverage React Server Components for SEO and speed.', '/blogs/nextjs15.jpg', 'mastering-nextjs-15', 'technical', true, '2025-12-01'),
-('The DevOps Handbook for Fullstack Developers', 'CI/CD pipelines with GitHub Actions...', 'Automating your deployment workflow from zero to production.', '/blogs/devops.jpg', 'devops-handbook', 'technical', false, '2025-12-10'),
-('Zero-Allocation Logging in Go', 'Reducing GC pressure with Zap...', 'Techniques to write high-speed logs without clogging the memory.', '/blogs/go-logging.jpg', 'zero-allocation-logging', 'technical', false, '2025-12-15'),
-('Building a Custom Load Balancer from Scratch', 'Using Round Robin algorithms...', 'Exploring the networking fundamentals of traffic distribution.', '/blogs/load-balancer.jpg', 'custom-load-balancer', 'technical', false, '2025-12-20'),
-('TCP vs UDP: When to Choose What?', 'A comparison for real-time systems...', 'Understanding protocol overhead in low-latency environments.', '/blogs/tcp-udp.jpg', 'tcp-vs-udp', 'technical', false, '2025-12-28'),
-('Monitoring Microservices with Prometheus', 'Metrics, Alerts, and Dashboards...', 'How to gain visibility into your distributed systems.', '/blogs/prometheus.jpg', 'monitoring-microservices', 'technical', false, '2026-01-05'),
-('Docker Security: Hardening your Containers', 'Avoiding root users and using Alpine...', 'A checklist for shipping secure production images.', '/blogs/docker-security.jpg', 'docker-security-hardening', 'technical', false, '2026-01-10'),
-('API Rate Limiting with Redis', 'Leaky Bucket vs Token Bucket...', 'Protecting your backend from brute force and DDoS.', '/blogs/rate-limiting.jpg', 'api-rate-limiting-redis', 'technical', false, '2026-01-15'),
-
--- PERSONAL BLOGS (Development & Experience)
-('Why I switched from Python to Go', 'My journey through type safety...', 'Reflecting on the performance gains and developer experience shift.', '/blogs/python-to-go.jpg', 'switching-to-go', 'personal', true, '2025-09-15'),
-('The 10,000 Hour Rule in Software Engineering', 'Is mastery just about time?', 'Discussing deliberate practice and mental models.', '/blogs/mastery.jpg', '10000-hour-rule', 'personal', false, '2025-09-20'),
-('My First Production Outage: What I Learned', 'It was a Tuesday at 3 AM...', 'A post-mortem on a database connection leak incident.', '/blogs/outage.jpg', 'first-production-outage', 'personal', true, '2025-10-15'),
-('Balancing Fullstack Dev with DevOps Roles', 'Wearing two hats is hard...', 'How to manage system reliability while shipping features.', '/blogs/two-hats.ts', 'balancing-dev-and-ops', 'personal', false, '2025-11-20'),
-('The Art of Clean Code in 2026', 'Readability over cleverness...', 'Why your future self will thank you for simple code.', '/blogs/clean-code.jpg', 'clean-code-2026', 'personal', false, '2025-11-25'),
-('Why Every Developer Should Learn Raw SQL', 'Escaping the ORM trap...', 'A personal take on why abstraction can be a bottleneck.', '/blogs/learn-raw-sql.jpg', 'why-learn-raw-sql', 'personal', false, '2025-12-05'),
-('Overcoming Burnout in a High-Growth Role', 'Taking a step back to move forward...', 'Strategies for long-term sustainability in tech.', '/blogs/burnout.jpg', 'overcoming-burnout', 'personal', false, '2025-12-18'),
-('Setting up my Home Lab: 2026 Edition', 'Raspberry Pis and Proxmox...', 'How I practice DevOps concepts in my local environment.', '/blogs/home-lab.jpg', 'home-lab-setup', 'personal', false, '2026-01-02'),
-('How to read Technical Documentation effectively', 'Skipping the fluff to find the facts...', 'A guide to learning complex tools in record time.', '/blogs/documentation.jpg', 'reading-docs-effectively', 'personal', false, '2026-01-08'),
-('The Importance of Side Projects', 'Building for curiosity, not just resume...', 'Keeping the spark alive outside of work hours.', '/blogs/side-projects.jpg', 'importance-of-side-projects', 'personal', false, '2026-01-18')
-ON CONFLICT (slug) DO NOTHING;
-
-
--- 6. SEED Resumes`
-INSERT INTO resumes (version_name, focus_area, file_url, is_latest) VALUES 
--- Fullstack Focused
-('v1.0.0-fullstack', 'fullstack', '/drive/resumes/fs_v1_0_0.pdf', false),
-('v1.1.0-fullstack', 'fullstack', '/drive/resumes/fs_v1_1_0.pdf', false),
-('v1.2.0-fullstack', 'fullstack', '/drive/resumes/fs_v1_2_0.pdf', true), -- Latest FS
-
--- Backend Focused
-('v1.0.0-backend', 'backend', '/drive/resumes/be_v1_0_0.pdf', false),
-('v1.1.0-backend', 'backend', '/drive/resumes/be_v1_1_0.pdf', false),
-('v1.2.5-backend', 'backend', '/drive/resumes/be_v1_2_5.pdf', true), -- Latest BE
-
--- DevOps Focused
-('v0.9.0-devops-beta', 'devops', '/drive/resumes/do_v0_9_0.pdf', false),
-('v1.0.0-devops', 'devops', '/drive/resumes/do_v1_0_0.pdf', false),
-('v1.1.0-devops', 'devops', '/drive/resumes/do_v1_1_0.pdf', false),
-('v1.3.0-devops', 'devops', '/drive/resumes/do_v1_3_0.pdf', true), -- Latest DevOps
-
--- Combined/Mixed
-('v2.0.0-specialist', 'devops', '/drive/resumes/specialist_v2.pdf', false)
-ON CONFLICT (version_name) DO NOTHING;
-
+INSERT INTO blogs (
+    title, 
+    content, 
+    summary, 
+    image_url, 
+    slug, 
+    category, 
+    is_featured
+) VALUES (
+    'Optimizing Next.js 15: Breaking the Main Thread Bottleneck',
+    '# Optimizing the Critical Rendering Path\n\nWhen building high-performance portfolios, the biggest enemy is **Total Blocking Time (TBT)**. In this deep dive, we explore how I audited the "Mayur_OS" portfolio using Chrome DevTools...\n\n## 1. The Dynamic Bridge Pattern\nBy offloading heavy client-side components to a dynamic bridge, we reduced the initial JavaScript payload by 40%.\n\n## 2. selective Hydration\nWhy hydrate what you can''t see? We implemented Intersection Observers to trigger hydration only for components entering the viewport.',
+    'A deep dive into reducing TBT and LCP by auditing the main thread and implementing dynamic component bridging in Next.js 15.',
+    '/blogs/nextjs-performance.jpg',
+    'optimizing-nextjs-15-main-thread',
+    'TECHNICAL',
+    true
+),
+(
+    'Edge Authentication: Why I Ditched Traditional Sessions for Jose',
+    '# Scaling Auth to the Edge\n\nTraditional session-based authentication requires a database hit for every single request. This is a latency killer. For my portfolio, I moved the security logic to the network edge.\n\n## Why Jose?\n`jose` is a lightweight, zero-dependency library that works perfectly in Next.js Middleware. It allows us to verify JWTs in secure cookies before the request even reaches our server.\n\n## The DevOps Benefit\nBy keeping auth stateless, we eliminate the need for session-store synchronization across regions, making the system globally scalable by default.',
+    'Exploring the transition to stateless, JWT-based Edge authentication using the jose library for zero-latency admin security.',
+    '/blogs/edge-auth-jose.jpg',
+    'edge-authentication-with-jose',
+    'TECHNICAL',
+    false
+);
 
 
 -- 7. SEED Contact Messages

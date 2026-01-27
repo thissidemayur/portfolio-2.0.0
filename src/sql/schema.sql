@@ -1,18 +1,18 @@
 -- enums 
 DO $$ BEGIN
-    CREATE TYPE tech_category AS ENUM (
-    'languages & runtimes',
-    'frontend',
-    'backend',
-    'database & ORMs',
-    'devops',
-    'tools',
-    'other'
+   CREATE TYPE tech_category AS ENUM (
+        'PROGRAMMING_LANGUAGES', 
+        'FRONTEND',              
+        'BACKEND',               
+        'DB_ORM',                
+        'INFRASTRUCTURE(aws)',        
+        'DEVOPS',              
+        'TOOLS'                 
     );
 
-    CREATE TYPE blog_type AS ENUM('TECHNICAL' | 'NON_TECHNICAL');
+    CREATE TYPE blog_type AS ENUM('TECHNICAL' , 'NON_TECHNICAL');
 
-    CREATE TYPE resume_category AS ENUM('GENERAL', 'FULLSTACK', 'DEVOPS', 'BACKEND')
+    CREATE TYPE resume_category AS ENUM('GENERAL', 'FULLSTACK', 'DEVOPS', 'BACKEND');
     
 EXCEPTION
     WHEN duplicate_object THEN NULL;
@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS technologies (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
     category tech_category NOT NULL,
-    icon_slug VARCHAR(255) NOT NULL,
     is_main_stack BOOLEAN  DEFAULT false
 );
 
@@ -43,7 +42,7 @@ CREATE TABLE IF NOT EXISTS projects(
     solution_approach TEXT NOT NULL,
     key_learnings TEXT[] NOT NULL,
     challenges_faced TEXT[] NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 
 );
@@ -66,7 +65,7 @@ CREATE TABLE IF NOT EXISTS certificates(
     slug VARCHAR(255) UNIQUE NOT NULL,
     credential_url TEXT UNIQUE,
     is_industry_standard BOOLEAN DEFAULT false,
-    show_on_home BOOLEAN DEFAULT false,
+    show_on_home BOOLEAN DEFAULT false
 );
 
 CREATE TABLE IF NOT EXISTS blogs(
@@ -78,7 +77,7 @@ CREATE TABLE IF NOT EXISTS blogs(
     slug VARCHAR(255) UNIQUE NOT NULL,
     category blog_type NOT NULL,
     is_featured BOOLEAN DEFAULT false,
-    published_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    published_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
 
@@ -89,9 +88,9 @@ CREATE TABLE IF NOT EXISTS resumes(
     is_latest BOOLEAN DEFAULT false,
 
     -- Content stored as JSONB
-    summary JSONB,
+    summary TEXT[],
     skills JSONB,
-    experiece JSONB,
+    experience JSONB,
     projects JSONB,
     achievements JSONB,
     education JSONB,
