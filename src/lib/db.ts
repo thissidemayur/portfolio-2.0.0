@@ -1,13 +1,15 @@
 import { Pool, PoolConfig } from "pg";
 
+const isProduction = process.env.NODE_ENV === "production";
+const isLocalDb = process.env.DATABASE_URL?.includes("localhost") || process.env.DATABASE_URL?.includes("127.0.0.1");
+
 const poolConfig: PoolConfig = {
-    connectionString:process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+    connectionString: process.env.DATABASE_URL,
+    ssl: isProduction && !isLocalDb ? { rejectUnauthorized: false } : false,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
 }
-
 // prevent creating multiple instances of Pool in development(hot reloading)
 const globalForPg = global as unknown as {pgPool:Pool | undefined} 
 
