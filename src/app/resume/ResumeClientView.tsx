@@ -7,11 +7,21 @@ import {
   Code,
   Server,
   ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 import { iResume, ResumeType } from "@/types/database";
-import { GeneralResumeLayout } from "./GeneralCV";
-import { SpecializedResumeLayout } from "./Specialized";
-import { ResumeSEO } from "./ResumeSEO";
+// Dynamically import layouts with a skeleton loading state
+const GeneralResumeLayout = dynamic(() => import("./GeneralCV").then(mod => mod.GeneralResumeLayout), {
+  ssr: true,
+  loading: () => <div className="h-[842px] w-full bg-white/5 animate-pulse" />
+});
+
+const SpecializedResumeLayout = dynamic(() => import("./Specialized").then(mod => mod.SpecializedResumeLayout), {
+  ssr: true,
+  loading: () => <div className="h-[842px] w-full bg-white/5 animate-pulse" />
+});
+import dynamic from "next/dynamic";
+import Link from "next/link";
 
 export default function ResumePage({ initialData }: { initialData: iResume[] }) {
   // Default to General CV as requested
@@ -29,8 +39,19 @@ export default function ResumePage({ initialData }: { initialData: iResume[] }) 
 
   return (
     <main className="min-h-screen bg-[#050505] py-10 px-4">
-      <ResumeSEO data={currentResumeData} />
       {/* 1. Control Toolbar (Hidden during print) */}
+      <header className="mb-10">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 hover:text-white transition-colors group mb-6"
+        >
+          <ArrowLeft
+            size={14}
+            className="group-hover:-translate-x-1 transition-transform"
+          />
+          Back
+        </Link>
+      </header>
       <div className="max-w-[850px] mx-auto mb-8 flex flex-col gap-4 bg-[#0A0A0A] p-4 rounded-2xl border border-white/10 print:hidden">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Main Category Toggle */}

@@ -1,64 +1,45 @@
-import React from "react";
+"use client"
+import React, { memo } from "react";
 import { iResume } from "@/types/database";
 
-export const SpecializedResumeLayout = ({ data }: { data: iResume }) => {
+export const SpecializedResumeLayout = memo(({ data }: { data: iResume }) => {
   
   return (
     <div id="resume-print-area">
       <article className="max-w-[850px] mx-auto bg-white p-12 shadow-xl font-sans text-black leading-snug print:shadow-none print:p-0">
-        {/* SEO Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Person",
-              name: "Suraj Singh",
-              jobTitle: "Full Stack Web Developer",
-              address: {
-                "@type": "PostalAddress",
-                addressLocality: "Mathura",
-                addressRegion: "Uttar Pradesh",
-                postalCode: "281001",
-              },
-              alumniOf: "Lovely Professional University",
-              knowsAbout: Object.values(data.skills).flat(),
-            }),
-          }}
-        />
+       
 
         {/* Specialized Header: Centered and Clean */}
         <header className="text-center mb-6 resume-header">
           <h1 className="text-2xl font-bold uppercase tracking-widest mb-1">
-            Suraj Singh {/* [cite: 1] */}
+            Mayur Pal
           </h1>
           <address className="not-italic text-[10px] mb-2 text-gray-700">
-            Mathura, Uttar Pradesh 281001 {/* [cite: 1] */}
+            Phagwara, Punjab  {/* [cite: 1] */}
           </address>
           {/* Removed border-b and pb-4 for a cleaner UI */}
           <div className="flex justify-center items-center gap-4 text-[9px] font-medium">
-            
-            <span className="flex items-center gap-1">📞 +91 1234567890</span>{" "}
+            <span className="flex items-center gap-1">📞 +91 6283750133</span>{" "}
             {/* [cite: 1] */}
             <a
-              href="mailto:surajsingh5092@gmail.com"
+              href="mailto:thissidemayur@gmail.com"
               className="underline hover:text-blue-700"
             >
-              surajsingh5092@gmail.com {/* [cite: 1] */}
+              thissidemayur@gmail.com {/* [cite: 1] */}
             </a>
             <a
-              href="https://linkedin.com/in/suraj-singh-5092/"
+              href="https://linkedin.com/in/thissidemayur/"
               target="_blank"
               className="underline hover:text-blue-700"
             >
-              linkedin.com/in/sXXXXXXXX {/* [cite: 1] */}
+              linkedin.com/in/thissidemayur {/* [cite: 1] */}
             </a>
             <a
-              href="https://github.com/suraj-singh12"
+              href="https://github.com/thissidemayur"
               target="_blank"
               className="underline hover:text-blue-700"
             >
-              github.com/suraj-singh12 {/* [cite: 1] */}
+              github.com/thissidemayur {/* [cite: 1] */}
             </a>
           </div>
         </header>
@@ -136,10 +117,12 @@ export const SpecializedResumeLayout = ({ data }: { data: iResume }) => {
             Skills
           </h2>
           <div className="text-[11px] space-y-1 ml-2">
-            {Object.entries(data.skills).map(([key, values]) => (
-              <p key={key}>
-                <strong className="capitalize">{key.replace("_", " ")}:</strong>{" "}
-                {Array.isArray(values) ? values.join(", ") : values}
+            {data.skills.map((group, index) => (
+              <p key={index} className="leading-tight">
+                <strong className="capitalize">
+                  {group.category.replace("_", " ")}:
+                </strong>{" "}
+                {group.items.join(", ")}
               </p>
             ))}
           </div>
@@ -170,4 +153,8 @@ export const SpecializedResumeLayout = ({ data }: { data: iResume }) => {
       </article>
     </div>
   );
-};
+})
+
+
+// Set display name for easier debugging in DevTools
+SpecializedResumeLayout.displayName = "SpecializedResumeLayout";

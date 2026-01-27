@@ -1,56 +1,39 @@
-import React from "react";
+"use client"
+import React, { memo } from "react";
 import { iResume } from "@/types/database";
 
-export const GeneralResumeLayout = ({ data }: { data: iResume }) => {
+export const GeneralResumeLayout = memo(({ data }: { data: iResume }) => {
   return (
     <article className="max-w-[850px] mx-auto bg-white p-10 shadow-xl font-sans text-black leading-tight print:shadow-none print:p-0">
-      {/* 1. Schema.org Person Metadata (SEO) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Person",
-            name: "Uxxxxx Xxxxx",
-            email: "ujjwaljain604@gmail.com",
-            telephone: "+91-1234567890",
-            url: "https://github.com/UjjwalJain02",
-            alumniOf: {
-              "@type": "CollegeOrUniversity",
-              name: "Lovely Professional University",
-            },
-            knowsAbout: Object.values(data.skills).flat(),
-          }),
-        }}
-      />
+     
 
       {/* Header Section */}
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-[#303F9F] mb-1 uppercase tracking-tight">
-          Uxxxxx Xxxxx
+          Mayur Pal
         </h1>
         <div className="flex justify-between text-[10px] text-gray-700">
           <address className="not-italic">
             <p>
               Linkedin:{" "}
               <a
-                href="https://www.linkedin.com/in/ujjwal-jain-3549651b6/"
+                href="https://www.linkedin.com/in/thissidemayur/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-[#303F9F] underline transition-colors"
               >
-                uxxxx-gxxxx-123456789
+                linkedin.com/in/thissidemayur
               </a>
             </p>
             <p>
               Github:{" "}
               <a
-                href="https://github.com/UjjwalJain02"
+                href="https://github.com/thissidemayur"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-[#303F9F] underline transition-colors"
               >
-                github.com/Uxxxxxxxxxx
+                github.com/thissidemayur
               </a>
             </p>
           </address>
@@ -58,19 +41,19 @@ export const GeneralResumeLayout = ({ data }: { data: iResume }) => {
             <p>
               Email:{" "}
               <a
-                href="mailto:ujjwaljain604@gmail.com"
+                href="mailto:thissidemayur@gmail.com"
                 className="hover:text-[#303F9F] underline"
               >
-                ujjwaljain604@gmail.com
+                thissidemayur@gmail.com
               </a>
             </p>
             <p>
               Mobile:{" "}
               <a
-                href="tel:+911234567890"
+                href="tel:+6283750133"
                 className="hover:text-[#303F9F] underline"
               >
-                +91-1234567890
+                +91-6283750133
               </a>
             </p>
           </div>
@@ -78,17 +61,28 @@ export const GeneralResumeLayout = ({ data }: { data: iResume }) => {
       </header>
 
       {/* Dynamic Skills Section - SEO Optimized with Bullet Points */}
-      <section className="mb-4">
-        <h2 className="text-xs font-bold text-[#303F9F] uppercase border-b border-gray-300 pb-0.5 mb-2">
+      {/* Dynamic Skills Section - Refined for iSkillGroup[] */}
+      <section className="mb-5">
+        <h2 className="text-xs font-bold uppercase border-b border-black pb-0.5 mb-2 tracking-wide text-gray-800">
           Skills
         </h2>
-        <ul className="text-[11px] space-y-0.5 list-disc ml-8">
-          {Object.entries(data.skills).map(([key, values]) => (
-            <li key={key}>
-              {Array.isArray(values) ? values.join(", ") : values}
-            </li>
-          ))}
-        </ul>
+        <div className="text-[11px] space-y-1 ml-2">
+          {/* Wrap in Array.isArray check to prevent build crash */}
+          {Array.isArray(data.skills) ? (
+            data.skills.map((group, index) => (
+              <p key={index} className="leading-tight">
+                <strong className="capitalize">
+                  {group.category.replace("_", " ")}:
+                </strong>{" "}
+                {group.items.join(", ")}
+              </p>
+            ))
+          ) : (
+            <p className="text-[11px] text-gray-400">
+              Loading_Skills_Packet...
+            </p>
+          )}
+        </div>
       </section>
 
       {/* Internship Section */}
@@ -179,4 +173,6 @@ export const GeneralResumeLayout = ({ data }: { data: iResume }) => {
       </section>
     </article>
   );
-};
+});
+
+GeneralResumeLayout.displayName = "GeneralResumeLayout";
