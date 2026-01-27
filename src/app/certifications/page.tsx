@@ -50,11 +50,6 @@ export default async function CertificationPage() {
 
   return (
     <main className="min-h-screen bg-[#030303] text-white py-4 px-6">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(certSchema) }}
-      />
-
       <div className="max-w-7xl mx-auto">
         <nav className="mb-12">
           <Link
@@ -84,8 +79,12 @@ export default async function CertificationPage() {
         </header>
 
         {/* The list of certificates with filters */}
-        <CertificationList initialCerts={allCerts} />
+        <CertificationList certs={allCerts} />
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(certSchema) }}
+      />
     </main>
   );
 }
