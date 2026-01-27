@@ -1,6 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form"; // Added Controller
+import {
+  useForm,
+  useFieldArray,
+  Controller,
+  FieldErrors,
+  FieldArrayWithId,
+  UseFormRegister,
+  Control,
+} from "react-hook-form"; // Added Controller
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -20,28 +28,31 @@ import {
 } from "@/actions/projects.actions";
 import { iProject, iTech } from "@/types/database";
 import { RichTextEditor } from "./Editor";
+import { toast } from "sonner";
 
 const projectSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   summary: z.string().min(1, "Summary is required"),
-  content: z.string().min(10, "Case study content is too short"), // Tiptap field
+  content: z.string().min(10, "Case study content is too short"),
   image_url: z.string().url("Must be a valid URL"),
   live_url: z.string().url().optional().or(z.literal("")),
   repo_url: z.string().url("Must be a valid URL"),
-  is_featured: z.boolean().default(false),
+  // FIX: Remove .default() to satisfy the strict boolean type
+  is_featured: z.boolean(),
   problem_statement: z.string().min(1, "Problem statement is required"),
   solution_approach: z.string().min(1, "Solution approach is required"),
   key_learnings: z
-    .array(z.string().min(1, "Learning cannot be empty"))
+    .array(z.object({ value: z.string().min(1, "Learning cannot be empty") }))
     .min(1, "Add at least one learning"),
   challenges_faced: z
-    .array(z.string().min(1, "Challenge cannot be empty"))
+    .array(z.object({ value: z.string().min(1, "Challenge cannot be empty") }))
     .min(1, "Add at least one challenge"),
+
 });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
-
+type ProjectSubmissionData = Omit<iProject, "id" | "created_at" | "updated_at">;
 interface ProjectFormProps {
   allTech: iTech[];
   initialData?: iProject & { tech_ids?: number[] };
@@ -66,10 +77,20 @@ export function ProjectForm({
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: initialData
-      ? { ...initialData, live_url: initialData.live_url || "" }
+      ? {
+          ...initialData,
+          live_url: initialData.live_url || "",
+          // FIX: Map strings to objects
+          key_learnings: initialData.key_learnings.map((val) => ({
+            value: val,
+          })),
+          challenges_faced: initialData.challenges_faced.map((val) => ({
+            value: val,
+          })),
+        }
       : {
-          key_learnings: [""],
-          challenges_faced: [""],
+          key_learnings: [{ value: "" }],
+          challenges_faced: [{ value: "" }],
           is_featured: false,
           content: "",
         },
@@ -79,26 +100,51 @@ export function ProjectForm({
     fields: lFields,
     append: lAppend,
     remove: lRemove,
-  } = useFieldArray({ control, name: "key_learnings" });
+  } = useFieldArray<ProjectFormValues>({
+    control,
+    name: "key_learnings",
+  });
+
   const {
     fields: cFields,
     append: cAppend,
     remove: cRemove,
-  } = useFieldArray({ control, name: "challenges_faced" });
+  } = useFieldArray<ProjectFormValues>({
+    control,
+    name: "challenges_faced",
+  });
+
 
   const onSubmit = async (data: ProjectFormValues) => {
-    if (selectedTechIds.length === 0)
-      return alert("Select at least one technology.");
+    if (selectedTechIds.length === 0) {
+      toast.error("Select at least one technology.");
+      return;
+    }
+
+    const formattedData: ProjectSubmissionData = {
+      ...data,
+      key_learnings: data.key_learnings.map((item) => item.value),
+      challenges_faced: data.challenges_faced.map((item) => item.value),
+  
+      tech_stack: [],
+   
+    };
+
     const result =
       isEdit && initialData
-        ? await updateProjectAction(initialData.id, data, selectedTechIds)
-        : await createProjectAction(data, selectedTechIds);
+        ? await updateProjectAction(
+            initialData.id,
+            formattedData,
+            selectedTechIds,
+          )
+        : await createProjectAction(formattedData, selectedTechIds);
 
-    if (result.success) {
+    if (!result.success) {
+      toast.error(result.error || "Execution_Failure: Check console logs.");
+    } else {
+      toast.success(result.success);
       router.push("/admin/projects");
       router.refresh();
-    } else {
-      alert(result.error);
     }
   };
 
@@ -172,27 +218,24 @@ export function ProjectForm({
           </InputWrapper>
         </div>
 
-        {/* Array Sections for Learnings and Challenges */}
+        {/* Inside ProjectForm return */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ArrayInputSection
             title="Key_Learnings"
             name="key_learnings"
-            fields={lFields}
+            control={control}
             register={register}
-            append={lAppend}
-            remove={lRemove}
             errors={errors}
           />
           <ArrayInputSection
             title="Challenges_Faced"
             name="challenges_faced"
-            fields={cFields}
+            control={control}
             register={register}
-            append={cAppend}
-            remove={cRemove}
             errors={errors}
           />
         </div>
+        
       </div>
 
       {/* RIGHT COLUMN (Sidebar) */}
@@ -284,74 +327,90 @@ export function ProjectForm({
 
 
 
+
+// Define the interface using React Hook Form generics
+interface ArrayInputSectionProps {
+  title: string;
+  // This ensures 'name' can ONLY be one of your specific array fields
+  name: "key_learnings" | "challenges_faced";
+  control: Control<ProjectFormValues>;
+  register: UseFormRegister<ProjectFormValues>;
+  errors: FieldErrors<ProjectFormValues>;
+}
+
 function ArrayInputSection({
   title,
   name,
-  fields,
+  control,
   register,
-  append,
-  remove,
   errors,
-}: any) {
+}: ArrayInputSectionProps) {
+  // We move useFieldArray inside to let RHF handle the specific types for this 'name'
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name,
+  });
+
   return (
     <div className="bg-[#0A0A0A] p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 space-y-5">
-      {/* Header with Dynamic Add Button */}
       <div className="flex justify-between items-center px-1">
         <h3 className="text-[10px] font-mono uppercase text-white/30 tracking-[0.2em] font-bold">
           {title.replace("_", " ")}
         </h3>
+
+        {/* Append an object with the 'value' key - fully type-checked */}
         <button
           type="button"
-          onClick={() => append("")}
+          onClick={() => append({ value: "" })}
           className="text-[#00FF94] text-[9px] font-black tracking-widest border border-[#00FF94]/20 px-3 py-1.5 rounded-lg hover:bg-[#00FF94]/10 transition-all active:scale-95 flex items-center gap-2"
         >
           <Plus size={12} strokeWidth={3} /> ADD_ENTRY
         </button>
       </div>
 
-      {/* Dynamic List of Inputs */}
       <div className="space-y-3">
-        {fields.map((field: any, i: number) => (
-          <div
-            key={field.id}
-            className="group space-y-2 animate-in fade-in slide-in-from-top-2 duration-300"
-          >
-            <div className="flex gap-3 items-center">
-              {/* Index indicator */}
-              <span className="text-[10px] font-mono text-white/10 w-4">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              
-              <div className="relative flex-1">
-                <input
-                  {...register(`${name}.${i}`)}
-                  placeholder="System_log: input required..."
-                  className="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-xs md:text-sm text-white/80 outline-none focus:border-[#00FF94]/30 focus:bg-black/60 transition-all placeholder:text-white/5"
-                />
+        {fields.map((field, i) => {
+          // Drill into the error object safely
+          const fieldError = errors[name]?.[i]?.value;
+
+          return (
+            <div
+              key={field.id}
+              className="group space-y-2 animate-in fade-in slide-in-from-top-2 duration-300"
+            >
+              <div className="flex gap-3 items-center">
+                <span className="text-[10px] font-mono text-white/10 w-4">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+
+                <div className="relative flex-1">
+                  {/* register path is now type-safe */}
+                  <input
+                    {...register(`${name}.${i}.value` as const)}
+                    placeholder="System_log: input required..."
+                    className="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-xs md:text-sm text-white/80 outline-none focus:border-[#00FF94]/30 focus:bg-black/60 transition-all placeholder:text-white/5"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => remove(i)}
+                  className="p-2 text-white/10 hover:text-red-500 transition-colors group-hover:text-white/30"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
 
-              {/* Remove button: only visible/active if there's more than one field */}
-              <button
-                type="button"
-                onClick={() => remove(i)}
-                className="p-2 text-white/10 hover:text-red-500 transition-colors group-hover:text-white/30"
-                title="Remove Entry"
-              >
-                <Trash2 size={16} />
-              </button>
+              {fieldError && (
+                <p className="text-red-500 text-[8px] font-mono ml-9 flex items-center gap-1 uppercase tracking-tighter">
+                  <AlertCircle size={10} />
+                  {fieldError.message || "Entry_Void: Payload required"}
+                </p>
+              )}
             </div>
+          );
+        })}
 
-            {/* Field-specific Validation Error */}
-            {errors[name]?.[i] && (
-              <p className="text-red-500 text-[8px] font-mono ml-9 flex items-center gap-1 uppercase tracking-tighter">
-                <AlertCircle size={10} /> 
-                {errors[name][i].message || "Entry_Void: Payload required"}
-              </p>
-            )}
-          </div>
-        ))}
-
-        {/* Empty State UI */}
         {fields.length === 0 && (
           <div className="py-8 border-2 border-dashed border-white/5 rounded-2xl flex flex-col items-center justify-center space-y-2">
             <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest">
@@ -364,9 +423,6 @@ function ArrayInputSection({
   );
 }
 
-/**
- * Reusable wrapper for standard inputs (Title, Slug, etc.)
- */
 function InputWrapper({
   label,
   children,

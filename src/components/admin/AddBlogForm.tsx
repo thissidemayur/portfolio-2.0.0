@@ -18,7 +18,7 @@ const blogSchema = z.object({
   content: z.string().min(10, "Content must be at least 10 characters"),
   image_url: z.string().url("Must be a valid URL"),
   category: z.enum(["TECHNICAL", "NON_TECHNICAL"]),
-  is_featured: z.boolean().default(false),
+  is_featured: z.boolean(),
 });
 
 type BlogFormValues = z.infer<typeof blogSchema>;
@@ -31,13 +31,17 @@ export function BlogForm({
   isEdit?: boolean;
 }) {
   const router = useRouter();
+const [isMounted, setIsMounted] = React.useState(false);
+
+React.useEffect(() => {
+  setIsMounted(true);
+}, []);
 
   const {
     register,
     handleSubmit,
     control, // Necessary for the Tiptap Controller
     formState: { errors, isSubmitting },
-    setValue,
   } = useForm<BlogFormValues>({
     resolver: zodResolver(blogSchema),
     defaultValues: initialData
@@ -94,12 +98,18 @@ export function BlogForm({
             <Controller
               name="content"
               control={control}
-              render={({ field }) => (
-                <RichTextEditor 
-                  content={field.value} 
-                  onChange={(html) => field.onChange(html)} 
-                />
-              )}
+              render={({ field }) =>
+                // 2. Only render the Editor if we are on the client
+                isMounted ? (
+                  <RichTextEditor
+                    content={field.value}
+                    onChange={(html) => field.onChange(html)}
+                  />
+                ) : (
+                  // 3. Provide a placeholder for the server/prerender phase
+                  <div className="w-full h-[400px] bg-black/20 rounded-xl animate-pulse border border-white/5" />
+                )
+              }
             />
           </InputWrapper>
         </section>
@@ -117,7 +127,10 @@ export function BlogForm({
               />
             </InputWrapper>
 
-            <InputWrapper label="Category_Type" error={errors.category?.message}>
+            <InputWrapper
+              label="Category_Type"
+              error={errors.category?.message}
+            >
               <select
                 {...register("category")}
                 className="w-full bg-black/40 border border-white/10 p-3 rounded-lg outline-none text-xs text-white"
@@ -127,7 +140,10 @@ export function BlogForm({
               </select>
             </InputWrapper>
 
-            <InputWrapper label="Cover_Image_URL" error={errors.image_url?.message}>
+            <InputWrapper
+              label="Cover_Image_URL"
+              error={errors.image_url?.message}
+            >
               <div className="flex items-center gap-2 bg-black/40 border border-white/10 p-3 rounded-lg">
                 <ImageIcon size={14} className="text-white/20" />
                 <input
