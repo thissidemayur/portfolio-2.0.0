@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
 import { motion } from "framer-motion";
-import { Zap, Layout, Terminal, Cpu, ArrowUpRight } from "lucide-react";
+import { Zap, Layout, Terminal, Cpu } from "lucide-react";
 
 const services = [
   {

@@ -1,4 +1,4 @@
-import AboutClient from "@/components/about/AboutClient";
+import AboutLayout from "@/components/about/AboutLayout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <AboutClient />
+      <AboutLayout />
     </main>
   );
 }
