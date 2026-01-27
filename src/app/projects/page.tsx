@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 
 export default async function ProjectsPage() {
   const projects:iProject[] = await getAllPublicProjects()
-  
   const projectSchema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -51,11 +50,6 @@ export default async function ProjectsPage() {
 
   return (
     <main className="min-h-screen bg-[#050505] text-white pt-8 pb-24 px-6">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
-      />
-
       <div className="max-w-7xl mx-auto">
         <nav className="mb-12">
           <Link
@@ -70,8 +64,7 @@ export default async function ProjectsPage() {
           </Link>
         </nav>
         <header className="mb-20 space-y-0">
-          <div className="flex items-center gap-3 text-[10px] font-mono text-blue-500 font-black uppercase tracking-[0.4em]">
-          </div>
+          <div className="flex items-center gap-3 text-[10px] font-mono text-blue-500 font-black uppercase tracking-[0.4em]"></div>
           <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter italic leading-none">
             Project <span className="text-white/20">Registry</span>
           </h1>
@@ -81,8 +74,12 @@ export default async function ProjectsPage() {
           </p>
         </header>
 
-        <ProjectList initialProjects={projects} />
+        <ProjectList projects={projects} />
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
     </main>
   );
 }

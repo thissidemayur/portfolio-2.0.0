@@ -3,12 +3,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-import ProjectHero from "@/components/projects/ProjectHero";
 import TechnicalSpecs from "@/components/projects/TechnicalSpecs";
-import { getProjectByItSlug } from "@/dal/projects.dal";
+import {  getPublicProjectBySlug } from "@/dal/projects.dal";
 import { iProject } from "@/types/database";
 import { ProjectStory } from "@/components/projects/ProjectStory";
-import { getPublicBlogBySlug } from "@/dal/blogs.dal";
+import ProjectHero from "@/components/projects/ProjectHero";
 
 // Update the Props interface for Next.js 15
 interface Props {
@@ -18,14 +17,12 @@ interface Props {
 // 1. Dynamic SEO Metadata (Updated to await params)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  console.log(`slug: ${slug}`)
-  const project:iProject = await getProjectByItSlug(slug);
+  const project:iProject = await getPublicProjectBySlug(slug);
 
-  if (!project) return { title: "Project Not Found" };
 
   return {
-    title: `${project.title} | Software Case Study`,
-    description: project.summary, 
+    title: `${project?.title} | Software Case Study`,
+    description: project?.summary, 
   };
 }
 
@@ -33,8 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectSlugPage({ params }: Props) {
   // Await the params here
   const { slug } = await params;
-  const project: iProject = await getPublicBlogBySlug(slug);
-console.log("project: ",project)
+  const project: iProject = await getPublicProjectBySlug(slug);
   if (!project) {
     notFound();
   }
@@ -82,11 +78,6 @@ const projectSchema = {
 
   return (
     <main className="min-h-screen bg-[#050505] text-white pt-8 pb-24 px-6 selection:bg-blue-500/30">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
-      />
-
       <div className="max-w-6xl mx-auto">
         <nav className="mb-12">
           <Link
@@ -107,6 +98,10 @@ const projectSchema = {
           <TechnicalSpecs project={project} />
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
     </main>
   );
 }
