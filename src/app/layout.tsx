@@ -4,7 +4,7 @@ import "./globals.css";
 import SystemShell from "@/components/home/SystemShell";
 import HireMeButton from "@/components/hireButton";
 import { NavigationDock } from "@/components/home/NavigationDock";
-import { PreloadResources } from "./preload-resources";
+// import { PreloadResources } from "./preload-resources";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import ProgressProvider from "@/components/providers/ProgressProvider";
@@ -225,7 +225,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <PreloadResources />
+        {/* <PreloadResources /> */}
         <Suspense fallback={null}>
           <ProgressProvider>
             <SystemShell>
