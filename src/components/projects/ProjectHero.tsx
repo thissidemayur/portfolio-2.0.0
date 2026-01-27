@@ -15,6 +15,7 @@ export default function ProjectHero({ project }: { project: iProject }) {
           <a
             href={project.repo_url}
             target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 px-8 py-4 bg-white text-black rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-600 hover:text-white transition-all"
           >
             <Github size={16} /> Source_Code
@@ -23,6 +24,7 @@ export default function ProjectHero({ project }: { project: iProject }) {
             <a
               href={project.live_url}
               target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-white/20 transition-all"
             >
               <Globe size={16} /> Live_System
@@ -34,9 +36,11 @@ export default function ProjectHero({ project }: { project: iProject }) {
       <div className="relative aspect-video w-full bg-[#0a0a0a] border border-white/10 rounded-[3rem] overflow-hidden group">
         <Image
           fill
-          src={project.image_url}
-          alt={project.title}
+          priority // Added priority because this is the LCP element
+          src={project.image_url || "/placeholder-sword.jpg"}
+          alt={`${project.title} Preview`}
           className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-105"
+          sizes="(max-width: 1200px) 100vw, 1200px"
         />
       </div>
     </header>

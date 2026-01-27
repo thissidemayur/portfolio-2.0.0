@@ -1,48 +1,72 @@
 import { iProject } from "@/types/database";
-import { AlertTriangle, CheckCircle2, Terminal } from "lucide-react";
+import { Terminal } from "lucide-react";
 
+// components/projects/TechnicalSpecs.tsx
 export default function TechnicalSpecs({ project }: { project: iProject }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {/* FULL TECHNICAL LOG */}
-      <article className="md:col-span-2 p-12 bg-white/[0.02] border border-white/5 rounded-[3rem] space-y-6">
-        <h3 className="flex items-center gap-2 text-blue-500 font-mono text-[10px] font-black uppercase tracking-widest">
-          <Terminal size={14} /> 03_Development_Deep_Dive
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Development Deep Dive */}
+      <article className="md:col-span-2 p-8 md:p-12 bg-white/[0.02] border border-white/5 rounded-[3rem] shadow-2xl">
+        <h3 className="flex items-center gap-2 text-blue-500 font-mono text-[10px] font-black uppercase tracking-widest mb-8">
+          <Terminal size={14} /> 03_System_Implementation
         </h3>
-        <div className="prose prose-invert max-w-none text-gray-400">
-          {project.content}
-        </div>
+
+        {/* This container fixes your H2, H3, and Bold visibility issues */}
+        <div
+          className="
+            prose prose-invert max-w-none 
+            prose-headings:text-white prose-headings:italic prose-headings:tracking-tighter
+            prose-h2:text-3xl prose-h2:border-b prose-h2:border-white/5 prose-h2:pb-2
+            prose-h3:text-xl prose-h3:text-blue-400/80
+            prose-strong:text-white prose-strong:font-bold
+            prose-p:text-gray-400 prose-p:leading-relaxed
+            prose-li:text-gray-400
+          "
+          dangerouslySetInnerHTML={{ __html: project.content }}
+        />
       </article>
 
-      <div className="space-y-6">
-        {/* CHALLENGES */}
-        <article className="p-10 bg-red-500/[0.03] border border-red-500/10 rounded-[3rem] space-y-6">
-          <h3 className="flex items-center gap-2 text-red-500 font-mono text-[10px] font-black uppercase tracking-widest">
-            <AlertTriangle size={14} /> Critical_Obstacles
-          </h3>
-          <ul className="space-y-3">
-            {project.challenges_faced.map((c, i) => (
-              <li key={i} className="text-xs text-gray-500 flex gap-2">
-                <span className="text-red-500/50">—</span> {c}
+      <aside className="space-y-6">
+        {/* Critical Challenges */}
+        <div className="p-8 bg-red-500/[0.02] border border-red-500/10 rounded-[2.5rem]">
+          <h4 className="text-red-500 font-mono text-[9px] uppercase tracking-[0.4em] mb-6">
+            Obstacles_Resolved
+          </h4>
+          <ul className="space-y-4">
+            {project.challenges_faced.map((item, i) => (
+              <li
+                key={i}
+                className="group flex gap-3 text-xs leading-relaxed text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                <span className="text-red-500/30 group-hover:text-red-500 transition-colors">
+                  0{i + 1}
+                </span>
+                {item}
               </li>
             ))}
           </ul>
-        </article>
+        </div>
 
-        {/* LEARNINGS */}
-        <article className="p-10 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-[3rem] space-y-6">
-          <h3 className="flex items-center gap-2 text-emerald-500 font-mono text-[10px] font-black uppercase tracking-widest">
-            <CheckCircle2 size={14} /> Key_Takeaways
-          </h3>
-          <ul className="space-y-3">
-            {project.key_learnings.map((l, i) => (
-              <li key={i} className="text-xs text-gray-400 flex gap-2">
-                <span className="text-emerald-500">✓</span> {l}
+        {/* Knowledge Gained */}
+        <div className="p-8 bg-emerald-500/[0.02] border border-emerald-500/10 rounded-[2.5rem]">
+          <h4 className="text-emerald-500 font-mono text-[9px] uppercase tracking-[0.4em] mb-6">
+            Technical_Growth
+          </h4>
+          <ul className="space-y-4">
+            {project.key_learnings.map((item, i) => (
+              <li
+                key={i}
+                className="group flex gap-3 text-xs leading-relaxed text-gray-400 hover:text-white transition-colors"
+              >
+                <span className="text-emerald-500/40 group-hover:text-emerald-500 transition-colors">
+                  ✓
+                </span>
+                {item}
               </li>
             ))}
           </ul>
-        </article>
-      </div>
+        </div>
+      </aside>
     </div>
   );
 }
