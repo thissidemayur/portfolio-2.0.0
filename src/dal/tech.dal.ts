@@ -24,12 +24,12 @@ export const getSkillsByCategory = async()=>{
 // add a new technology
 export const addTechnology = async(tech:Omit<iTech,'id'>)=>{
     const sql = `
-        INSERT INTO technologies (name,category,icon_slug,is_main_stack)
-        VALUES ($1,$2,$3,$4)
+        INSERT INTO technologies (name,category,is_main_stack)
+        VALUES ($1,$2,$3)
         RETURNING *;
     `;
 
-    const values = [tech.name, tech.category, tech.icon_slug, tech.is_main_stack];
+    const values = [tech.name, tech.category, tech.is_main_stack];
     const { rows } = await query(sql, values);
     return rows[0];
 }
@@ -55,6 +55,17 @@ export const deleteTechnologyById = async(id:number)=>{
     `;
     const { rows } = await query(sql,[id]);
     return rows[0];
+}
+
+export async function toggleMainStackById(id: number, isMain: boolean) {
+  const sql = `
+    UPDATE technologies 
+    SET is_main_stack = $1, updated_at = NOW() 
+    WHERE id = $2 
+    RETURNING *;
+  `;
+  const { rows } = await query(sql, [isMain, id]);
+  return rows[0];
 }
 
 // update a technology by id
