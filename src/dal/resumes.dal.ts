@@ -1,3 +1,4 @@
+"use server"
 import { query } from "@/lib/db";
 import { iResume, ResumeType } from "@/types/database";
 import { cacheTag } from "next/cache";
@@ -48,11 +49,11 @@ export const createResumeVersion = async (
       resume.category,
       resume.is_latest,
       resume.summary,
-      resume.skills,
-      resume.experience,
-      resume.projects,
-      resume.education,
-      resume.achievements,
+      JSON.stringify(resume.skills), // JSONB - Must be stringified
+      JSON.stringify(resume.experience), // JSONB - Must be stringified
+      JSON.stringify(resume.projects), // JSONB - Must be stringified
+      JSON.stringify(resume.achievements), // JSONB - Must be stringified
+      JSON.stringify(resume.education),
     ];
 
     const { rows } = await query(sql, values);
