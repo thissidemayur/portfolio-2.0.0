@@ -1,4 +1,3 @@
-import { boolean, number, string } from "zod";
 
 export type iBlog = {
   id: number;
@@ -39,10 +38,15 @@ export type iProject = {
   key_learnings: string[];
   challenges_faced: string[];
   created_at: Date;
-  updated_at: Date;
+  updated_at?: Date;
   tech_stack: string[];
 };
 
+
+export type iSkillGroup = {
+  category: string;
+  items: string[];
+};
 export type iResume = {
   id: number;
   version_name: string;
@@ -50,9 +54,9 @@ export type iResume = {
   is_latest: boolean;
 
   summary: string[];
-  skills: string[];
+  skills: iSkillGroup[];
 
-  experiece: {
+  experience: {
     company: string;
     role: string;
     duration: string;
@@ -72,7 +76,7 @@ export type iResume = {
     institution: string;
     degree: string;
     score: string;
-    location?:string;
+    location?: string;
     duration: string;
   }[];
 
@@ -88,17 +92,16 @@ export type iTech = {
   id: number;
   name: string;
   category: TechCategory;
-  icon_slug: string;
   is_main_stack: boolean;
 };
 export type TechCategory =
-  | "languages & runtimes"
-  | "frontend"
-  | "backend"
-  | "database & ORMs"
-  | "devops"
-  | "tools"
-  | "other";
+  | "PROGRAMMING_LANGUAGES"
+  | "FRONTEND"
+  | "BACKEND"
+  | "DB_ORM"
+  | "INFRASTRUCTURE(aws)"
+  | "DEVOPS"
+  | "TOOLS";
 
 export interface iCertificate {
   id: number;
