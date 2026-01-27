@@ -25,7 +25,7 @@ export default function ResumeAdminPage() {
               size={14}
               className="group-hover:-translate-x-1 transition-transform"
             />
-            Back_to_System
+            Back
           </Link>
         </header>
 

@@ -132,7 +132,10 @@ export default function ResumeDashboard({ history }: { history: iResume[] }) {
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock size={12} /> Updated{" "}
-                        {new Date(resume.updated_at).toLocaleDateString()}
+                        {new Date(resume.updated_at)
+                          .toISOString()
+                          .replace("T", " ")
+                          .substring(0, 16)}{" "}
                       </span>
                     </div>
                   </div>
