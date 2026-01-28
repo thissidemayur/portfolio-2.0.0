@@ -5,7 +5,7 @@ import { jwtVerify } from 'jose'; // lightweight JWT library for edge
 
 // This function can be marked `async` if using `await` inside
 // middleware.ts
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Define base routes that should be public
