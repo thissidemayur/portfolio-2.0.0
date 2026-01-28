@@ -4,22 +4,28 @@ import { jwtVerify } from 'jose'; // lightweight JWT library for edge
 
 
 // This function can be marked `async` if using `await` inside
-export async function proxy(request: NextRequest) {
+// middleware.ts
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // allowest route
-  const publicPaths = ["/", "/contact", "/projects", "/login", "/home","/about","/certifications","/blogs","/resume","/uses"
+  // 1. Define base routes that should be public
+  const publicPrefixes = [
+    "/", "/contact", "/projects", "/login", "/home", 
+    "/about", "/certifications", "/blogs", "/resume", "/uses"
   ];
 
+  // 2. Optimized check: Match prefixes and Next.js internal files
   const isPublicPath =
-    publicPaths.includes(pathname) ||
+    publicPrefixes.some(path => pathname === path || pathname.startsWith(path + "/")) ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/public");
+    pathname.startsWith("/api/public") ||
+    pathname === "/favicon.ico";
 
   if (isPublicPath) {
-    return NextResponse.next(); // Let these pass through!
+    return NextResponse.next();
   }
-  // protected route
+
+  // 3. Protected admin routes
   if (pathname.startsWith("/admin")) {
     const token = request.cookies.get("admin_session")?.value;
 
@@ -32,10 +38,12 @@ export async function proxy(request: NextRequest) {
       await jwtVerify(token, secret);
       return NextResponse.next();
     } catch (error) {
-      return NextResponse.redirect(new URL("login", request.url));
+      console.error("JWT_VERIFY_ERROR:", error);
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
-  return NextResponse.redirect(new URL("/home", request.url));
-}
 
+  // 4. Fallback for anything else (should be public by default in most portfolios)
+  return NextResponse.next(); 
+}
 
