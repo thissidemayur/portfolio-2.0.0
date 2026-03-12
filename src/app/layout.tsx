@@ -70,6 +70,7 @@ export const metadata: Metadata = {
     "Freelancer",
     "Devops Jobs",
     "full stack job",
+    "thissidemayur"
   ],
   authors: [{ name: "Mayur Pal" }, { name: "thissidemayur" }],
   creator: "Mayur Pal",
