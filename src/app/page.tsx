@@ -1,8 +1,6 @@
 import dynamic from "next/dynamic";
 import Hero from "@/components/home/Hero";
 import ActiveBentoGrid from "@/components/home/ActiveBentoGrid";
-
-
 import { ProjectSkeleton } from "@/components/home/Skelton";
 import BlogsLoading from "@/components/admin/SuspenseBlog";
 import CertsLoading from "@/components/admin/SuspenseCertificates";
@@ -11,6 +9,7 @@ import {
   GithubSection,
   StackArchitecture
 } from "@/components/home/DynamicClientComponont";
+import { getPublicSkillsByCategory } from "@/dal/tech.dal";
 
 
 const FeaturedProjects = dynamic(() =>import( "@/components/home/FeaturedProjects"),{
@@ -32,7 +31,8 @@ const CertificationVault = dynamic(
 );
 
 
-export default function Page() {
+export default async function Page() {
+  const techData = await getPublicSkillsByCategory();
   return (
     <main>
       <Hero />
@@ -41,7 +41,7 @@ export default function Page() {
       <LogicPhilosophy />
       <RecentBlogs />
       <GithubSection />
-      <StackArchitecture />
+      <StackArchitecture data={techData} />
       <CertificationVault />
     </main>
   );

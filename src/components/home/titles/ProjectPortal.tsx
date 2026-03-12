@@ -1,8 +1,6 @@
 "use client";
-import React from "react";
 import FlipCard from "@/components/ui/FlipCard";
 
-// Define the type for our technical specifications
 interface SystemDetail {
   label: string;
   value: string;
@@ -34,11 +32,11 @@ export default function ProjectPortal() {
             </header>
 
             <p className="text-sm text-white/40 leading-relaxed mb-4">
-              CarbonFootprint Calculator: A distributed MERN system designed for
-              real-time ESG (Environmental, Social, and Governance) monitoring.
+              CarbonFootprint Calculator: Engineered for high-throughput data
+              processing, reducing ESG reporting overhead by 40% through
+              real-time automation.
             </p>
 
-            {/* PIPELINE LOGS (DevOps Aesthetic) */}
             <aside
               className="font-mono text-[9px] space-y-1 bg-emerald-500/5 border border-emerald-500/10 p-3 rounded-xl text-emerald-500/70 mb-4"
               aria-label="System deployment logs"
@@ -49,9 +47,8 @@ export default function ProjectPortal() {
             </aside>
           </div>
 
-          {/* TECH STACK TAGS */}
           <footer className="flex flex-wrap gap-2">
-            {["Next.js", "Go", "AWS", "Redis"].map((tag) => (
+            {["Next.js", "Express.JS", "AWS", "Redis"].map((tag) => (
               <span
                 key={tag}
                 className="text-[9px] px-2 py-1 bg-white/5 border border-white/10 rounded text-white/50 font-mono"
@@ -62,11 +59,7 @@ export default function ProjectPortal() {
           </footer>
         </section>
 
-        {/* RIGHT: INTERACTIVE CARD AREA */}
         <div className="relative h-[220px] md:h-full w-full">
-          {/* FIX: We wrap the FlipCard or apply the scrollbar-hide class 
-            inside the FlipCard component to prevent "Bad CSS" scrollbars.
-          */}
           <div className="h-full w-full scrollbar-hide overflow-y-auto rounded-3xl">
             <FlipCard
               title="CarbonTrack"

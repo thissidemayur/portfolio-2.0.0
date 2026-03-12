@@ -5,115 +5,133 @@ import {
   Cpu,
   Database,
   Cloud,
-  Terminal as TerminalIcon,
+  Terminal,
   Layers,
+  Code,
+  AlertCircle,
 } from "lucide-react";
 
-interface TechCategory {
-  icon: React.ReactNode;
-  tools: string[];
-  color: string;
-}
-
-const TECH_STACK: Record<string, TechCategory> = {
-  "Runtime & Languages": {
-    icon: <Cpu size={20} className="text-blue-400" />,
-    tools: ["Go", "Node.js", "Bun", "C", "C++", "Bash", "Linux"],
-    color: "rgba(59, 130, 246, 0.5)",
+const CATEGORY_MAP: Record<string, { icon: React.ReactNode; color: string }> = {
+  PROGRAMMING_LANGUAGES: {
+    icon: <Cpu size={18} className="text-blue-400" />,
+    color: "#3b82f6",
   },
-  "Frontend Architecture": {
-    icon: <Layers size={20} className="text-purple-400" />,
-    tools: [
-      "Next.js",
-      "React",
-      "React-Hook-Form",
-      "Zod",
-      "Zustand",
-      "TailwindCSS",
-    ],
-    color: "rgba(168, 85, 247, 0.5)",
+  FRONTEND: {
+    icon: <Layers size={18} className="text-purple-400" />,
+    color: "#a855f7",
   },
-  "Data & State": {
-    icon: <Database size={20} className="text-emerald-400" />,
-    tools: ["MongoDB", "Redis", "PostgreSQL", "Socket.io"],
-    color: "rgba(16, 185, 129, 0.5)",
+  BACKEND: {
+    icon: <Database size={18} className="text-emerald-400" />,
+    color: "#10b981",
   },
-  "Infrastructure (AWS)": {
-    icon: <Cloud size={20} className="text-orange-400" />,
-    tools: ["EC2", "ECS", "ECR", "S3", "Route53", "Load Balancer", "IAM"],
-    color: "rgba(249, 115, 22, 0.5)",
+  DB_ORM: {
+    icon: <Database size={18} className="text-cyan-400" />,
+    color: "#22d3ee",
   },
-  "Development Workflow": {
-    icon: <TerminalIcon size={20} className="text-pink-400" />,
-    tools: ["Docker", "Terraform", "GitHub Actions", "Postman"],
-    color: "rgba(236, 72, 153, 0.5)",
+  "INFRASTRUCTURE(aws)": {
+    icon: <Cloud size={18} className="text-orange-400" />,
+    color: "#f97316",
+  },
+  DEVOPS: {
+    icon: <Terminal size={18} className="text-pink-400" />,
+    color: "#ec4899",
+  },
+  TOOLS: {
+    icon: <Code size={18} className="text-gray-400" />,
+    color: "#9ca3af",
+  },
+  default: {
+    icon: <Code size={18} className="text-gray-400" />,
+    color: "#ffffff",
   },
 };
 
-export default function StackArchitecture() {
-  return (
-    <section className="py-32 px-6 max-w-7xl mx-auto overflow-hidden">
-      {/* HEADER: Inventory Title */}
-      <header className="text-center mb-20">
-        <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-4">
-          Tech Stack <span className="text-white/20">&</span> Systems
-        </h2>
-        <div className="flex items-center gap-4 justify-center">
-          <div className="h-[1px] w-12 bg-blue-500/30" aria-hidden="true" />
-          <p className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.4em] font-bold">
-            Engineering_Infrastructure_Inventory
+interface Skill {
+  id: number;
+  name: string;
+  is_main_stack: boolean;
+}
+
+interface DBRow {
+  category: string;
+  skills: Skill[];
+}
+
+export default function StackArchitecture({ data }: { data: DBRow[] }) {
+  if (!data || data.length === 0) {
+    return (
+      <section className="py-24 text-center border-t border-white/5">
+        <div className="flex flex-col items-center gap-4 text-white/20">
+          <AlertCircle size={40} />
+          <p className="font-mono text-[10px] uppercase tracking-widest">
+            Inventory_Empty: No_Tech_Found_In_DB
           </p>
-          <div className="h-[1px] w-12 bg-blue-500/30" aria-hidden="true" />
         </div>
-      </header>
+      </section>
+    );
+  }
 
-      {/* GRID: Technology Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Object.entries(TECH_STACK).map(([category, data], idx) => (
-          <motion.article
-            key={category}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.1 }}
-            whileHover={{ y: -10, scale: 1.02 }}
-            className="group relative p-8 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:border-white/20 shadow-2xl"
-          >
-            {/* Ambient Background Glow */}
-            <div
-              className="absolute -top-24 -right-24 w-64 h-64 blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none"
-              style={{ backgroundColor: data.color }}
-              aria-hidden="true"
-            />
+  return (
+    <section className="py-32 px-6 md:px-12 lg:px-24 bg-[#050505]">
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-20">
+       
+          <h2 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none">
+            TECH <span className="text-white/20">STACK</span>
+          </h2>
+        </header>
 
-            {/* Category Title & Icon */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-white/5 rounded-2xl border border-white/10 group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                {data.icon}
-              </div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest italic opacity-60 group-hover:opacity-100 transition-opacity">
-                {category}
-              </h3>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.map((item, idx) => {
+            const design = CATEGORY_MAP[item.category] || CATEGORY_MAP.default;
 
-            {/* Tools Collection */}
-            <ul className="flex flex-wrap gap-2 relative z-10 scrollbar-hide">
-              {data.tools.map((tool) => (
-                <li
-                  key={tool}
-                  className="px-4 py-1.5 bg-white/[0.03] border border-white/5 rounded-xl text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-default"
-                >
-                  {tool}
-                </li>
-              ))}
-            </ul>
+            const readableCategory = item.category
+              .toLowerCase()
+              .replace(/_/g, " ")
+              .replace(/\((.*)\)/, (match, p1) => ` (${p1.toUpperCase()})`)
+              .replace(/\b\w/g, (l) => l.toUpperCase());
 
-            {/* Aesthetic Detail */}
-            <footer className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-4 group-hover:translate-y-0">
-              <div className="h-1 w-12 bg-gradient-to-r from-transparent to-blue-500 rounded-full" />
-            </footer>
-          </motion.article>
-        ))}
+            return (
+              <motion.article
+                key={item.category}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05 }}
+                className="group p-8 rounded-[2.5rem] bg-[#0a0a0a] border border-white/5 hover:border-blue-500/20 transition-all duration-500"
+              >
+                {/* CATEGORY LABEL */}
+                <div className="flex items-center gap-3 mb-8">
+                  <div
+                    className="p-2.5 rounded-xl bg-white/5 border border-white/10"
+                    style={{ color: design.color }}
+                  >
+                    {design.icon}
+                  </div>
+                  <h3 className="text-[11px] font-mono font-black text-white/40 uppercase tracking-[0.2em] group-hover:text-white transition-colors">
+                    {readableCategory}
+                  </h3>
+                </div>
+
+                {/* SKILLS LIST */}
+                <ul className="flex flex-wrap gap-2">
+                  {item.skills.map((skill) => (
+                    <li
+                      key={skill.id}
+                      className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition-all border ${
+                        skill.is_main_stack
+                          ? "bg-blue-500/10 border-blue-500/30 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
+                          : "bg-white/[0.02] border-white/5 text-white/30 hover:text-white hover:border-white/20"
+                      }`}
+                    >
+                      {skill.name}
+                    </li>
+                  ))}
+                </ul>
+              </motion.article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

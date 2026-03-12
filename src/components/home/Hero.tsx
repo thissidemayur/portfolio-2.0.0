@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { motion } from "framer-motion";
 import {
   Terminal,
@@ -46,7 +45,8 @@ export default function Hero() {
         >
           <Activity size={14} className="text-blue-400 animate-pulse" />
           <p className="text-[10px] font-mono text-blue-300 uppercase tracking-[0.2em]">
-            Status: Open for Freelance & Internships // LPU_CSE_Y3
+            Status:Available for Q3 Projects // Specialized in SaaS & Scalable
+            Architecture
           </p>
         </motion.div>
 
@@ -82,9 +82,9 @@ export default function Hero() {
                 <span className="text-blue-400">Postgres</span>.
               </p>
               <p className="text-md text-slate-400 max-w-xl font-light italic">
-                &quot;I thrive in the &apos;fucking debugging&apos;
-                phase—architecting infrastructure that doesn&apos;t just ship,
-                but scales.&quot;
+                &quot;I architect resilient digital infrastructure. From rapid
+                MVP development to scaling distributed systems, I ensure your
+                product stays up when your traffic spikes.&quot;
               </p>
             </motion.div>
 
@@ -102,7 +102,7 @@ export default function Hero() {
                   href="/contact"
                   className="flex-1 group flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-blue-600 text-white font-black text-[9px] md:text-[10px] uppercase tracking-widest md:tracking-[0.2em] transition-all hover:bg-blue-700 shadow-[0_15px_30px_rgba(37,99,235,0.3)] hover:scale-[1.02] active:scale-95"
                 >
-                  <span className="truncate">ESTABLISH_CONNECTION</span>
+                  <span className="truncate">START A PROJECT</span>
                   <ChevronRight
                     size={14}
                     className="shrink-0 group-hover:translate-x-1 transition-transform"
