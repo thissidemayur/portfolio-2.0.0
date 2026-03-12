@@ -2,10 +2,9 @@ import AboutLayout from "@/components/about/AboutLayout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Mayur Pal | Full-Stack & DevOps Engineer",
+  title: "About | Mayur Pal — Systems & DevOps Engineer",
   description:
-    "Learn more about Mayur Pal, specializing in Nextjs, MERN, GoLang, AWS Cloud infrastructure and Devops.",
-  
+    "Software Engineering student specializing in SEO-optimized Next.js, GoLang, and AWS Cloud infrastructure. Focused on building resilient, scalable digital products.",
 };
 
 export default function AboutPage() {

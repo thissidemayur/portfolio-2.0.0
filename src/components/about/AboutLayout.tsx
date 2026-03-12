@@ -1,14 +1,14 @@
 
 import AcademicSection from "./AcademicSection";
+import CompetencyMatrix from "./CompletencyMatrix";
 import CTASection from "./CTASection";
 import IdentitySection from "./IdentitySection";
-import ServicesSection from "./ServicesSection";
 
 export default function AboutLayout() {
   return (
     <div className="max-w-6xl mx-auto pt-8 pb-24 px-6">
       <IdentitySection />
-      <ServicesSection />
+      <CompetencyMatrix />
       <AcademicSection />
       <CTASection />
       <footer className="mt-20 pt-8 border-t border-white/5 text-center">
