@@ -304,7 +304,7 @@ INSERT INTO blogs (
     'Optimizing Next.js 15: Breaking the Main Thread Bottleneck',
     '# Optimizing the Critical Rendering Path\n\nWhen building high-performance portfolios, the biggest enemy is **Total Blocking Time (TBT)**. In this deep dive, we explore how I audited the "Mayur_OS" portfolio using Chrome DevTools...\n\n## 1. The Dynamic Bridge Pattern\nBy offloading heavy client-side components to a dynamic bridge, we reduced the initial JavaScript payload by 40%.\n\n## 2. selective Hydration\nWhy hydrate what you can''t see? We implemented Intersection Observers to trigger hydration only for components entering the viewport.',
     'A deep dive into reducing TBT and LCP by auditing the main thread and implementing dynamic component bridging in Next.js 15.',
-    '/blogs/nextjs-performance.jpg',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/htmlCssJS.webp',
     'optimizing-nextjs-15-main-thread',
     'TECHNICAL',
     true
@@ -313,7 +313,7 @@ INSERT INTO blogs (
     'Edge Authentication: Why I Ditched Traditional Sessions for Jose',
     '# Scaling Auth to the Edge\n\nTraditional session-based authentication requires a database hit for every single request. This is a latency killer. For my portfolio, I moved the security logic to the network edge.\n\n## Why Jose?\n`jose` is a lightweight, zero-dependency library that works perfectly in Next.js Middleware. It allows us to verify JWTs in secure cookies before the request even reaches our server.\n\n## The DevOps Benefit\nBy keeping auth stateless, we eliminate the need for session-store synchronization across regions, making the system globally scalable by default.',
     'Exploring the transition to stateless, JWT-based Edge authentication using the jose library for zero-latency admin security.',
-    '/blogs/edge-auth-jose.jpg',
+    'https://mayur-portfolio-123.s3.ap-south-1.amazonaws.com/certifications/htmlCssJS.webp',
     'edge-authentication-with-jose',
     'TECHNICAL',
     false
