@@ -10,7 +10,6 @@ export const getSkillsByCategory = async()=>{
         SELECT category, json_agg(json_build_object(
             'id', id,
             'name', name,
-            'icon_slug', icon_slug,
             'is_main_stack', is_main_stack
         )) as skills 
         FROM technologies
@@ -90,22 +89,22 @@ export const updateTechnologyById = async(id:number,tech:Partial<Omit<iTech,'id'
 
 
 export const getPublicSkillsByCategory = async () => {
-    'use cache';
-    cacheTag('technologies');
-    
-    const sql = `
+  "use cache";
+  cacheTag("technologies");
+
+  const sql = `
         SELECT category, json_agg(json_build_object(
             'id', id,
             'name', name,
-            'icon_slug', icon_slug,
             'is_main_stack', is_main_stack
-        )) as skills 
+        ) ORDER BY is_main_stack DESC, name ASC) as skills 
         FROM technologies
-        GROUP BY category;
+        GROUP BY category
+        ORDER BY category ASC;
     `;
 
-    const { rows } = await query(sql);
-    return rows;
+  const { rows } = await query(sql);
+  return rows;
 };
 
 export const getPublicMainStack = async () => {
