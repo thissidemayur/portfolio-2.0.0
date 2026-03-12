@@ -16,6 +16,10 @@ const FeaturedProjects = dynamic(() =>import( "@/components/home/FeaturedProject
   ssr:true,
   loading:()=><ProjectSkeleton/>
 });
+const FooterCTA = dynamic(() => import("@/components/home/FooterCTA"), {
+  ssr: true,
+  loading: () => <ProjectSkeleton />,
+});
 
 const RecentBlogs = dynamic(() => import("@/components/home/RecentBlogs"),{
   ssr:true,
@@ -40,9 +44,10 @@ export default async function Page() {
       <FeaturedProjects />
       <LogicPhilosophy />
       <RecentBlogs />
-      <GithubSection />
       <StackArchitecture data={techData} />
+      <GithubSection />
       <CertificationVault />
+      <FooterCTA/>
     </main>
   );
 }
