@@ -1,4 +1,3 @@
-import React from "react";
 import { Github, Twitter, Linkedin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -55,7 +54,6 @@ export default function BlogFooter() {
         </div>
       </div>
 
-      {/* SYSTEM LOGO / COPYRIGHT */}
       <div className="flex justify-center items-center py-6 border-t border-white/5">
         <p className="text-[9px] font-mono text-white/10 uppercase tracking-[0.3em]">
           &copy; 2026 Mayur_Pal // System_Ready // v1.0.4

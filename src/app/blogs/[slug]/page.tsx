@@ -7,15 +7,20 @@ import { iBlog } from "@/types/database";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
+import { generateHTML } from "@tiptap/html";
+import StarterKit from "@tiptap/starter-kit";
 export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const post: iBlog = await getPublicBlogBySlug(slug);
 
+  const contentHtml = generateHTML(
+    typeof post.content === "string" ? JSON.parse(post.content) : post.content,
+    [StarterKit],
+  );
   // Unified Schema Structure
   const jsonLd = {
     "@context": "https://schema.org",
@@ -113,7 +118,7 @@ export default async function BlogPostPage({
 
           {/* Main Content Area */}
           <main className="mt-16">
-            <BlogContent content={post.content} />
+            <BlogContent content={contentHtml} />
           </main>
 
           {/* Footer */}

@@ -59,9 +59,17 @@ export default function BlogFilters({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {filteredPosts.map((post, idx) => (
-          <BlogCard key={post.id} post={post} idx={idx} />
-        ))}
+        {filteredPosts.length > 0 ? (
+          filteredPosts.map((post, idx) => (
+            <BlogCard key={post.id} post={post} idx={idx} />
+          ))
+        ) : (
+          <div className="md:col-span-2 py-20 text-center border border-dashed border-white/10 rounded-[3rem]">
+            <p className="text-white/20 font-mono text-xs uppercase tracking-[0.3em]">
+              No Blog Found {`"${searchQuery}"`}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
