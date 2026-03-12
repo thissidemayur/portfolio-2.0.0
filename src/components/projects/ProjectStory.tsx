@@ -1,23 +1,26 @@
 import { iProject } from "@/types/database";
-import { Zap, Target } from "lucide-react";
 
 export function ProjectStory({ project }: { project: iProject }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 py-16 border-y border-white/5">
-      <div className="space-y-6">
-        <h3 className="flex items-center gap-2 text-amber-500 font-mono text-[10px] font-black uppercase tracking-[0.3em]">
-          <Target size={14} /> The Business Challenge
-        </h3>
-        <p className="text-2xl md:text-4xl font-light leading-[1.1] text-white/90 italic tracking-tight">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12 py-16">
+      {/* Problem Card */}
+      <div className="p-10 bg-[#0a0a0a] border border-white/5 rounded-[3rem] space-y-6">
+        <div className="flex items-center gap-3 text-amber-500/50 uppercase font-mono text-[10px] tracking-[0.3em]">
+          <div className="h-1 w-1 bg-amber-500 rounded-full" />
+          <h3 className="text-lg font-bold">The_Challenge</h3>
+        </div>
+        <p className="text-2xl md:text-3xl font-medium leading-tight text-white italic">
           &quot;{project.problem_statement}&quot;
         </p>
       </div>
 
-      <div className="space-y-6">
-        <h3 className="flex items-center gap-2 text-blue-500 font-mono text-[10px] font-black uppercase tracking-[0.3em]">
-          <Zap size={14} /> The Strategic Solution
-        </h3>
-        <p className="text-lg text-gray-400 leading-relaxed font-light border-l border-white/10 pl-6">
+      <div className="p-10 bg-blue-500/[0.02] border border-blue-500/10 rounded-[3rem] space-y-6">
+        <div className="flex items-center gap-3 text-blue-500/50 uppercase font-mono text-[10px] tracking-[0.3em]">
+          <div className="h-1 w-1 bg-blue-500 rounded-full" />
+
+          <h3 className="text-lg font-bold">The_Strategys</h3>
+        </div>
+        <p className="text-lg text-white/50 leading-relaxed font-light">
           {project.solution_approach}
         </p>
       </div>

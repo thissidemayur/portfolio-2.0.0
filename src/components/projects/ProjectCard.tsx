@@ -18,10 +18,7 @@ export default function ProjectCard({ project }: { project: iProject }) {
     >
       <header className="flex justify-between items-start mb-8">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 text-[10px] font-mono text-blue-500/60 uppercase tracking-tighter">
-            <Box size={10} />
-            Node_Ref: {project.slug.split("-")[0]}
-          </div>
+   
           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/5 border border-emerald-500/20 w-fit">
             <div className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-[8px] font-mono text-emerald-500/80 uppercase">

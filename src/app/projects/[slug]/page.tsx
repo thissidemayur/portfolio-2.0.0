@@ -9,12 +9,10 @@ import { iProject } from "@/types/database";
 import { ProjectStory } from "@/components/projects/ProjectStory";
 import ProjectHero from "@/components/projects/ProjectHero";
 
-// Update the Props interface for Next.js 15
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// 1. Dynamic SEO Metadata (Updated to await params)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project:iProject = await getPublicProjectBySlug(slug);
@@ -26,9 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// 2. The Page Component (Must be async)
 export default async function ProjectSlugPage({ params }: Props) {
-  // Await the params here
   const { slug } = await params;
   const project: iProject = await getPublicProjectBySlug(slug);
   if (!project) {
