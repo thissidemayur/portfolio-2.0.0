@@ -17,10 +17,21 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post: iBlog = await getPublicBlogBySlug(slug);
 
-  const contentHtml = generateHTML(
-    typeof post.content === "string" ? JSON.parse(post.content) : post.content,
-    [StarterKit],
-  );
+  let contentHtml = "";
+
+  try {
+    // Check if content is a JSON string (standard Tiptap storage)
+    if (typeof post.content === "string" && post.content.startsWith("{")) {
+      const jsonContent = JSON.parse(post.content);
+      contentHtml = generateHTML(jsonContent, [StarterKit]);
+    } else {
+      // If it starts with < (HTML) or isn't JSON, use it as is
+      contentHtml = post.content;
+    }
+  } catch (e) {
+    // Fallback if parsing fails
+    contentHtml = post.content;
+  }
   // Unified Schema Structure
   const jsonLd = {
     "@context": "https://schema.org",
