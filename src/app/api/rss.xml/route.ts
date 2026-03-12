@@ -39,7 +39,11 @@ export async function GET() {
       type: "Project",
       url: `${siteUrl}/projects/${p.slug}`,
     })),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  ].sort((a, b) => {
+    const dateA = a.date ? new Date(a.date).getTime() : 0;
+    const dateB = b.date ? new Date(b.date).getTime() : 0;
+    return dateB - dateA;
+  });
 
   const itemsXml = allContent
     .map(
@@ -48,28 +52,27 @@ export async function GET() {
         <title>[${item.type}] ${escapeXml(item.title)}</title>
         <link>${item.url}</link>
         <description>${escapeXml(item.excerpt || item.description || "")}</description>
-        <pubDate>${new Date(item.date).toUTCString()}</pubDate>
+        <pubDate>${item.date ? new Date(item.date).toUTCString() : new Date().toUTCString()}</pubDate>
         <guid isPermaLink="true">${item.url}</guid>
       </item>`,
     )
     .join("");
 
-  // FIX: Escaped the '&' in the channel title as well
   const rssFeed = `<?xml version="1.0" encoding="UTF-8" ?>
     <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
       <channel>
-        <title>Mayur Pal | Full Stack &amp; Devops Engineers</title>
+        <title>Mayur Pal | Full-Stack &amp; DevOps Engineer</title>
         <link>${siteUrl}</link>
         <description>The latest projects and technical insights from Mayur Pal.</description>
         <language>en-us</language>
         <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml" />
         ${itemsXml}
       </channel>
-    </rss>`;
+    </rss>`.trim();
 
   return new Response(rssFeed, {
     headers: {
-      "Content-Type": "text/xml",
+      "Content-Type": "application/rss+xml", // Standard RSS MIME type
       "Cache-Control": "s-maxage=3600, stale-while-revalidate",
     },
   });
