@@ -3,16 +3,20 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
+      unoptimized: true,
+    
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "certs", // Replace with the actual domain if it's different
-        pathname: "/**",
+        hostname: "**.amazonaws.com", // This covers ALL S3 buckets and regions
       },
       {
         protocol: "https",
         hostname: "mayur-portfolio-123.s3.ap-south-1.amazonaws.com",
-        pathname: "/**", // This allows all images under this domain
+      },
+      {
+        protocol: "https",
+        hostname: "s3.ap-south-1.amazonaws.com", // Regional specific
       },
     ],
   },
