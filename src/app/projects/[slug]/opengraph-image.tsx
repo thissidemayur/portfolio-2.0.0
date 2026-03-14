@@ -1,8 +1,6 @@
 import { ImageResponse } from "next/og";
-import { headers } from "next/headers";
 import { getProjectByItSlug } from "@/dal/projects.dal";
 
-export const runtime = "edge";
 export const alt = "Project Case Study";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

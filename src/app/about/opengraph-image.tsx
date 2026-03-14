@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { headers } from "next/headers";
 
-export const runtime = "edge";
 export const alt = "About Mayur Pal | Systems Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

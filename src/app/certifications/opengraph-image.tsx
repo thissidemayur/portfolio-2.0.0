@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 import { headers } from "next/headers";
 import { getCertificatesCount } from "@/dal/certificates.dal";
 
-export const runtime = "edge";
 export const alt = "Mayur Pal | Verified Credentials";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

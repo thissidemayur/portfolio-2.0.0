@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 import { headers } from "next/headers";
 import { getBlogStats } from "@/dal/blogs.dal";
 
-export const runtime = "edge";
 export const alt = "Mayur Pal Engineering Logs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

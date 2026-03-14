@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 import { headers } from "next/headers";
 import { getProjectStats } from "@/dal/projects.dal";
 
-export const runtime = "edge";
 export const alt = "Mayur Pal | Project Gallery";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
