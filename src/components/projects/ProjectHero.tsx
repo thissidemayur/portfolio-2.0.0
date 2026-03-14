@@ -7,8 +7,6 @@ export default function ProjectHero({ project }: { project: iProject }) {
 
   return (
     <header className="space-y-10">
-     
-
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
         <div className="max-w-4xl">
           {/* Reduced Title Size for better UX */}
@@ -17,25 +15,30 @@ export default function ProjectHero({ project }: { project: iProject }) {
             <span className="text-blue-600">.</span>
           </h1>
         </div>
-
-        {/* Action Buttons: Unified Style */}
         <div className="flex flex-wrap gap-3 pb-2">
           <a
             href={project.repo_url}
             target="_blank"
-            className="flex items-center gap-3 px-6 py-3.5 bg-white text-black rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-300"
+            className="flex items-center gap-3 px-6 py-3.5 bg-white text-black rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-lg shadow-white/5"
           >
-            <Github size={14} /> View_Source_Code
+            <Github size={14} /> GitHub Repository
           </a>
           {project.live_url && (
             <a
               href={project.live_url}
               target="_blank"
-              className="flex items-center gap-3 px-6 py-3.5 bg-[#111] border border-white/10 text-white rounded-xl font-black uppercase text-[9px] tracking-widest hover:border-blue-500/50 transition-all duration-300"
+              className="flex items-center gap-3 px-6 py-3.5 bg-[#111] border border-white/10 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:border-blue-500/50 transition-all duration-300"
             >
-              <Globe size={14} /> Live_URL
+              <Globe size={14} /> View Live Project
             </a>
           )}
+        </div>
+        {/* Decorative Corner Element - Professionalized */}
+        <div className="absolute bottom-6 right-8 hidden md:block">
+          <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.3em] flex items-center gap-2">
+            <span className="h-1 w-1 bg-green-500 rounded-full animate-pulse" />
+            Deployment: Production Ready
+          </span>
         </div>
       </div>
 

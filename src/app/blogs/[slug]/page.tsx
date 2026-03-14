@@ -7,8 +7,7 @@ import { iBlog } from "@/types/database";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { generateHTML } from "@tiptap/html";
-import StarterKit from "@tiptap/starter-kit";
+
 export default async function BlogPostPage({
   params,
 }: {
@@ -17,22 +16,13 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post: iBlog = await getPublicBlogBySlug(slug);
 
-  let contentHtml = "";
+  // 1. Safety First: If no post, stop immediately
+  if (!post) return NotFound();
 
-  try {
-    // Check if content is a JSON string (standard Tiptap storage)
-    if (typeof post.content === "string" && post.content.startsWith("{")) {
-      const jsonContent = JSON.parse(post.content);
-      contentHtml = generateHTML(jsonContent, [StarterKit]);
-    } else {
-      // If it starts with < (HTML) or isn't JSON, use it as is
-      contentHtml = post.content;
-    }
-  } catch (e) {
-    // Fallback if parsing fails
-    contentHtml = post.content;
-  }
-  // Unified Schema Structure
+  // 2. Content is now simple Markdown string
+  const content = post.content;
+
+  // 3. Structured Data (SEO)
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -80,12 +70,10 @@ export default async function BlogPostPage({
       },
     ],
   };
-  if (!post) NotFound();
 
   return (
     <article className="min-h-screen bg-[#050505] text-white pt-24 pb-24 selection:bg-blue-500/30">
       <div className="max-w-4xl mx-auto px-6">
-        {/* Navigation */}
         <nav className="mb-8 flex justify-between items-center">
           <Link
             href="/blogs"
@@ -98,48 +86,43 @@ export default async function BlogPostPage({
             Back
           </Link>
           <span className="text-[8px] font-mono text-white/10 uppercase tracking-[0.5em]">
-            Entry_Node: {post.id}
+            Node_ID: {post.id}
           </span>
         </nav>
 
-        {/* Cover Image Section */}
-        <div className="relative aspect-[21/9] w-full mb-16 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
-          <Image
-            src={post.image_url}
-            alt={post.title}
-            fill
-            priority
-            className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60" />
-        </div>
+        {/* 1. Add 'group' to the container */}
+<div className="group relative aspect-[21/9] w-full mb-16 rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl">
+  <Image
+    src={post.image_url}
+    alt={post.title}
+    fill
+    priority
+    className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
+  />
+  
+  {/* 3. Add pointer-events-none so the mouse "passes through" to the image */}
+  <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-80 pointer-events-none group-hover:opacity-40 transition-opacity duration-1000" />
+</div>
 
-        {/* Header Section */}
         <div className="max-w-3xl mx-auto">
           <BlogHeader
             title={post.title}
-            date={
-              post.published_at instanceof Date
-                ? post.published_at.toISOString()
-                : post.published_at
-            }
+            date={post.published_at.toString()}
             readingTime="5"
             tags={[post.category]}
           />
 
-          {/* Main Content Area */}
           <main className="mt-16">
-            <BlogContent content={contentHtml} />
+            {/* The Markdown Component handles everything now */}
+            <BlogContent content={content} />
           </main>
 
-          {/* Footer */}
           <footer className="mt-24 pt-16 border-t border-white/5">
             <BlogFooter />
           </footer>
         </div>
       </div>
 
-      {/* Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

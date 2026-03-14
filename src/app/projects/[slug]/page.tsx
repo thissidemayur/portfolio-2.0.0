@@ -8,6 +8,7 @@ import {  getPublicProjectBySlug } from "@/dal/projects.dal";
 import { iProject } from "@/types/database";
 import { ProjectStory } from "@/components/projects/ProjectStory";
 import ProjectHero from "@/components/projects/ProjectHero";
+import "highlight.js/styles/tokyo-night-dark.css"; // Ensure highlight.js theme is imported
 
 interface Props {
   params: Promise<{ slug: string }>;

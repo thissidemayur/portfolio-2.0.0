@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,7 +8,7 @@ import { Save, Loader2, ImageIcon, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createBlogAction, updateBlogAction } from "@/actions/blog.actions";
 import { iBlog } from "@/types/database";
-import { RichTextEditor } from "./Editor";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 // 1. Define the Zod Schema
 const blogSchema = z.object({
@@ -101,13 +101,13 @@ React.useEffect(() => {
               render={({ field }) =>
                 // 2. Only render the Editor if we are on the client
                 isMounted ? (
-                  <RichTextEditor
+                  <MarkdownEditor
                     content={field.value}
-                    onChange={(html) => field.onChange(html)}
+                    onChange={(val) => field.onChange(val)} // SimpleMDE returns a string directly
                   />
                 ) : (
                   // 3. Provide a placeholder for the server/prerender phase
-                  <div className="w-full h-[400px] bg-black/20 rounded-xl animate-pulse border border-white/5" />
+                  <div className="w-full h-[600px] bg-black/20 rounded-xl animate-pulse border border-white/5" />
                 )
               }
             />

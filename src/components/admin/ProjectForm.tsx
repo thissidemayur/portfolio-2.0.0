@@ -5,7 +5,6 @@ import {
   useFieldArray,
   Controller,
   FieldErrors,
-  FieldArrayWithId,
   UseFormRegister,
   Control,
 } from "react-hook-form"; // Added Controller
@@ -27,8 +26,8 @@ import {
   updateProjectAction,
 } from "@/actions/projects.actions";
 import { iProject, iTech } from "@/types/database";
-import { RichTextEditor } from "./Editor";
 import { toast } from "sonner";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 const projectSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -178,18 +177,19 @@ export function ProjectForm({
             />
           </InputWrapper>
 
-          {/* TIPTAP EDITOR REPLACES TEXTAREA */}
+          {/* MARKDOWN EDITOR REPLACES TIPTAP */}
           <InputWrapper
-            label="Full_Case_Study_Content"
+            label="Case_Study_Documentation"
             error={errors.content?.message}
           >
             <Controller
               name="content"
               control={control}
               render={({ field }) => (
-                <RichTextEditor
+              
+                <MarkdownEditor
                   content={field.value}
-                  onChange={(html) => field.onChange(html)}
+                  onChange={(val) => field.onChange(val)}
                 />
               )}
             />
@@ -235,7 +235,6 @@ export function ProjectForm({
             errors={errors}
           />
         </div>
-        
       </div>
 
       {/* RIGHT COLUMN (Sidebar) */}
