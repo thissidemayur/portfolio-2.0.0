@@ -7,10 +7,10 @@ import {
   MoveRight,
   ShieldCheck,
 } from "lucide-react";
-import { getAllPublicProjects } from "@/dal/projects.dal";
+import { getFeaturedProjects } from "@/dal/projects.dal";
 
 export default async function FeaturedProjects() {
-  const projects = await getAllPublicProjects();
+  const projects = await getFeaturedProjects(4);
 
   if (!projects || projects.length === 0) return null;
 

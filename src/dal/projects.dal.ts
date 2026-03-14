@@ -190,8 +190,8 @@ export const getPublicProjectBySlug = async (slug: string) => {
 };
 
 export async function getProjectStats() {
-  'use cache'
-  cacheTag("count-projects")
+  "use cache";
+  cacheTag("count-projects");
   try {
     const sql = `
             SELECT 
@@ -209,3 +209,19 @@ export async function getProjectStats() {
     return { total: 0, featured: 0 };
   }
 }
+
+export const getFeaturedProjects = async (limit: number = 4) => {
+  "use cache";
+  cacheTag("projects-featured");
+  const sql = `
+        SELECT p.* ,ARRAY_AGG(t.name) as tech_stack FROM projects p 
+        LEFT JOIN project_technologies pt ON p.id =pt.project_id
+        LEFT JOIN Technologies t ON pt.technology_id = t.id
+        WHERE p.is_featured = true
+        GROUP BY p.id
+        ORDER BY p.id DESC
+        LIMIT $1
+        `;
+  const { rows } = await query(sql, [limit]);
+  return rows;
+};

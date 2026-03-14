@@ -157,3 +157,16 @@ export const getPublicBlogBySlug = async (slug: string) => {
     return null;
   }
 };
+
+export const getFeaturedBlogs = async (limit: number = 3) => {
+  "use cache";
+  cacheTag("blogs-featured");
+  const sql = `
+        SELECT * FROM blogs 
+        WHERE is_featured = true 
+        ORDER BY published_at DESC 
+        LIMIT $1
+    `;
+  const { rows } = await query(sql, [limit]);
+  return rows;
+};

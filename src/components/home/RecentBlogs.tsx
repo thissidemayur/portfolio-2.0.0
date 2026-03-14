@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowUpRight, Clock, Terminal, Hash, MoveRight } from "lucide-react";
-import { getAllPublicBlog } from "@/dal/blogs.dal"; // Dynamic DAL import
+import { ArrowUpRight, Clock, Hash, MoveRight } from "lucide-react";
+import { getFeaturedBlogs } from "@/dal/blogs.dal"; // Dynamic DAL import
 
 export default async function RecentBlogs() {
-  const blogs = await getAllPublicBlog({ limit: 3, offset: 0 });
+  const blogs = await  getFeaturedBlogs(3)
 
   if (!blogs || blogs.length === 0) return null;
 
