@@ -142,3 +142,13 @@ export async function getPublicFeaturedCertificates(): Promise<iCertificate[]> {
     return [];
   }
 }
+
+export async function getCertificatesCount(): Promise<number> {
+  try {
+    const { rows } = await query("SELECT COUNT(*) FROM certificates");
+    return parseInt(rows[0].count);
+  } catch (error) {
+    console.error("Error counting certificates:", error);
+    return 0;
+  }
+}

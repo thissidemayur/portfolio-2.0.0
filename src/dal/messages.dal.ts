@@ -3,23 +3,22 @@ import { IMsg } from "@/types/database";
 
 // get all messages
 export async function getMessages() {
-    const sql = `
+  const sql = `
         SELECT * FROM contact_messages  ORDER BY received_at DESC
     `;
-    const {rows} = await query(sql)
-    return rows;
+  const { rows } = await query(sql);
+  return rows;
 }
 
 // mark us read
-export async function markMessageRead(id:number){
-    const sql = `
+export async function markMessageRead(id: number) {
+  const sql = `
     UPDATE contact_messages SET is_read = true  WHERE id=$1
     RETURNING *
     `;
-    const {rows} = await query(sql,[id])
-    return rows[0] 
+  const { rows } = await query(sql, [id]);
+  return rows[0];
 }
-
 
 export async function saveContactMessage({
   name,
@@ -37,11 +36,30 @@ export async function saveContactMessage({
   return rows[0];
 }
 
-// delete a message 
-export async function deleteMessage(id:number){
-    const sql = `
+// delete a message
+export async function deleteMessage(id: number) {
+  const sql = `
         DELETE FROM contact_messages WHERE id=$1
     `;
-    const {rows} = await query(sql,[id])
-    return rows[0];
+  const { rows } = await query(sql, [id]);
+  return rows[0];
+}
+
+export async function getMessagesStats() {
+  try {
+    const sql = `
+            SELECT 
+                COUNT(*) as total,
+                COUNT(*) FILTER (WHERE is_read = false) as unread
+            FROM contact_messages
+        `;
+    const { rows } = await query(sql);
+    return {
+      total: parseInt(rows[0].total),
+      unread: parseInt(rows[0].unread),
+    };
+  } catch (error) {
+    console.error("Error fetching message stats:", error);
+    return { total: 0, unread: 0 };
+  }
 }
