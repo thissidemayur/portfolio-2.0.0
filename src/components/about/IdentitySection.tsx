@@ -144,7 +144,7 @@ export default function IdentitySection() {
             {/* Photo Container */}
             <div className="relative w-full h-72 rounded-[2.5rem] overflow-hidden mb-6 border border-white/5">
               <Image
-                src="/mayur-pal.jpg" // Put your photo in /public/mayur-pal.jpg
+                src="/mayur.webp" // Put your photo in /public/mayur-pal.jpg
                 alt="Mayur Pal"
                 fill
                 className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
