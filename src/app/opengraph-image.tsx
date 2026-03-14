@@ -1,12 +1,15 @@
 import { ImageResponse } from "next/og";
+import { headers } from "next/headers";
 
 export const alt = "Mayur Pal | Full Stack & DevOps Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  // Replace with your actual deployed URL for the transparent PNG
-  const imageUrl = "https://thissidemayur.me/mayur-photo.png";
+  // Logic to handle local WebP rendering
+  const host = (await headers()).get("host");
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
 
   return new ImageResponse(
     <div
@@ -21,17 +24,26 @@ export default async function Image() {
           "radial-gradient(circle at 25px 25px, #111 2%, transparent 0%)",
         backgroundSize: "50px 50px",
         padding: "0 80px",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       {/* LEFT SECTION: TEXT HIERARCHY */}
-      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1.2,
+          zIndex: 20,
+        }}
+      >
         {/* Status Badge */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            marginBottom: "20px",
+            marginBottom: "30px",
           }}
         >
           <div
@@ -40,47 +52,48 @@ export default async function Image() {
               height: "12px",
               borderRadius: "50%",
               backgroundColor: "#2563eb",
+              boxShadow: "0 0 10px #2563eb",
             }}
           />
           <span
             style={{
               color: "#2563eb",
-              fontSize: "20px",
-              fontWeight: 400,
+              fontSize: "18px",
+              fontWeight: 700,
               letterSpacing: "4px",
-              textTransform: "uppercase",
+              fontFamily: "monospace",
             }}
           >
-            System_Online
+            SYSTEM_READY // PORTFOLIO_V3
           </span>
         </div>
 
-        {/* Name: Bold + Regular Mix */}
+        {/* Name Section */}
         <h1
           style={{
             display: "flex",
             flexDirection: "column",
             margin: 0,
-            lineHeight: 1.1,
+            lineHeight: 0.9,
           }}
         >
           <span
             style={{
-              fontSize: "110px",
+              fontSize: "120px",
               fontWeight: 900,
               color: "white",
-              letterSpacing: "-4px",
+              letterSpacing: "-6px",
             }}
           >
             MAYUR
           </span>
           <span
             style={{
-              fontSize: "110px",
+              fontSize: "120px",
               fontWeight: 200,
               color: "white",
-              letterSpacing: "-4px",
-              opacity: 0.8,
+              letterSpacing: "-6px",
+              opacity: 0.7,
             }}
           >
             PAL
@@ -90,45 +103,54 @@ export default async function Image() {
         {/* Title & Subtitle */}
         <div
           style={{
-            marginTop: "30px",
+            marginTop: "40px",
             display: "flex",
             flexDirection: "column",
           }}
         >
-          <p
+          <div
             style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: "#2563eb",
-              margin: 0,
-              textTransform: "uppercase",
-              letterSpacing: "2px",
+              backgroundColor: "rgba(37, 99, 235, 0.1)",
+              border: "1px solid #2563eb",
+              padding: "8px 16px",
+              borderRadius: "4px",
+              width: "fit-content",
             }}
           >
-            Full Stack & DevOps
-          </p>
+            <span
+              style={{
+                fontSize: "28px",
+                fontWeight: 700,
+                color: "#2563eb",
+                letterSpacing: "2px",
+              }}
+            >
+              FULL_STACK & DEVOPS
+            </span>
+          </div>
           <p
             style={{
               fontSize: "24px",
               fontWeight: 400,
               color: "rgba(255,255,255,0.4)",
-              margin: "10px 0 0 0",
+              margin: "20px 0 0 0",
               maxWidth: "500px",
               lineHeight: 1.4,
+              fontFamily: "monospace",
             }}
           >
-            Building robust digital infrastructure and high-performance web
+            {">"} Building robust infrastructure and high-performance web
             experiences.
           </p>
         </div>
       </div>
 
-      {/* RIGHT SECTION: YOUR PHOTO */}
+      {/* RIGHT SECTION: TRANSPARENT PHOTO */}
       <div
         style={{
           display: "flex",
           flex: 0.8,
-          justifyContent: "center",
+          justifyContent: "flex-end",
           alignItems: "flex-end",
           height: "100%",
           position: "relative",
@@ -138,23 +160,27 @@ export default async function Image() {
         <div
           style={{
             position: "absolute",
-            width: "400px",
-            height: "400px",
+            width: "500px",
+            height: "500px",
             backgroundColor: "#2563eb",
-            filter: "blur(120px)",
-            opacity: 0.15,
-            bottom: "100px",
+            filter: "blur(130px)",
+            opacity: 0.2,
+            bottom: "50px",
+            right: "-50px",
           }}
         />
 
         <img
-          src={imageUrl}
+        alt="Mayur's Portfile"
+          src={`${baseUrl}/mayur_transparent.webp`}
           style={{
-            height: "580px",
+            height: "650px",
             objectFit: "contain",
             zIndex: 10,
-            // Drop shadow to make the photo pop from the background
-            filter: "drop-shadow(0 20px 50px rgba(0,0,0,0.5))",
+            filter: "grayscale(100%) brightness(0.9) contrast(1.1)",
+            position: "absolute",
+            bottom: "-80px",
+            right: "-40px",
           }}
         />
       </div>
@@ -168,12 +194,13 @@ export default async function Image() {
           display: "flex",
           gap: "40px",
           color: "rgba(255,255,255,0.2)",
-          fontSize: "18px",
+          fontSize: "14px",
           fontFamily: "monospace",
+          zIndex: 30,
         }}
       >
-        <span>LPU_CSE_2026</span>
-        <span>FEDORA_ENV</span>
+        <span>LPU_CSE_2026 || INDIA</span>
+        <span>FEDORA_ENV || SCALE_X</span>
       </div>
     </div>,
     { ...size },

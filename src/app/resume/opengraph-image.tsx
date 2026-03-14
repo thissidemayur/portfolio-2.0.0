@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { headers } from "next/headers";
 
 export const runtime = "edge";
 export const alt = "Mayur Pal - Professional Resume";
@@ -6,108 +7,175 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
+
+  const host = (await headers()).get("host");
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
+
   return new ImageResponse(
     <div
       style={{
-        background: "#0F172A",
+        background: "#050505",
         width: "100%",
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "40px",
-        fontFamily: "sans-serif",
+        padding: "80px",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      {/* Subtle decorative border */}
+      {/* 1. BACKGROUND DECORATION (System Grid) */}
       <div
         style={{
           position: "absolute",
-          inset: "20px",
-          border: "2px solid rgba(34, 211, 238, 0.1)",
-          borderRadius: "24px",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: "500px",
+          backgroundImage:
+            "radial-gradient(circle at 2px 2px, rgba(34, 211, 238, 0.1) 1px, transparent 0)",
+          backgroundSize: "30px 30px",
+          zIndex: 1,
         }}
       />
 
-      {/* Header Section */}
+      {/* 2. TRANSPARENT PHOTO (Right Aligned) */}
+      <img
+        src={`${baseUrl}/mayur_transparent.webp`}
+        style={{
+          position: "absolute",
+          right: "-20px",
+          bottom: "-40px",
+          height: "600px",
+          zIndex: 5,
+          filter: "grayscale(100%) brightness(0.8)",
+        }}
+      />
+
+      {/* 3. GRADIENT OVERLAY */}
       <div
         style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to right, #050505 50%, transparent 100%)",
+          zIndex: 6,
+        }}
+      />
+
+      {/* 4. CONTENT LAYER */}
+      <div
+        style={{
+          zIndex: 10,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
+          height: "100%",
+          justifyContent: "center",
         }}
       >
+        {/* Label */}
         <div
           style={{
-            fontSize: 24,
-            color: "#22D3EE",
-            fontWeight: 600,
-            letterSpacing: "0.1em",
-            marginBottom: "16px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "20px",
           }}
         >
-          CURRICULUM VITAE
+          <div
+            style={{
+              width: "12px",
+              height: "12px",
+              background: "#22D3EE",
+              borderRadius: "2px",
+            }}
+          />
+          <span
+            style={{
+              color: "#22D3EE",
+              fontSize: "20px",
+              fontWeight: "bold",
+              letterSpacing: "0.3em",
+              fontFamily: "monospace",
+            }}
+          >
+            PROFESSIONAL_DOSSIER_V3
+          </span>
         </div>
 
         <h1
           style={{
-            fontSize: 90,
+            fontSize: "100px",
             fontWeight: 900,
-            color: "#F8FAFC",
+            color: "white",
             margin: 0,
-            lineHeight: 1,
+            lineHeight: 0.9,
+            letterSpacing: "-4px",
           }}
         >
-          Mayur Pal
+          MAYUR <br /> <span style={{ color: "#22D3EE" }}>PAL</span>
         </h1>
 
         <div
           style={{
-            fontSize: 32,
-            color: "#94A3B8",
-            marginTop: "12px",
-            fontWeight: 500,
+            fontSize: "28px",
+            color: "rgba(255,255,255,0.4)",
+            marginTop: "30px",
+            fontFamily: "monospace",
+            display: "flex",
+            flexDirection: "column",
+            gap: "5px",
           }}
         >
-          Full-Stack & DevOps Engineer
+          <span>{">"} FULL_STACK_ENGINEER</span>
+          <span>{">"} DEVOPS_SPECIALIST</span>
         </div>
-      </div>
 
-      {/* Call to Action Button Design */}
-      <div
-        style={{
-          marginTop: "60px",
-          background: "#22D3EE",
-          padding: "16px 40px",
-          borderRadius: "50px",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-        }}
-      >
+        {/* Call to Action Design (System Prompt Style) */}
         <div
           style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            color: "#0F172A",
+            marginTop: "50px",
+            display: "flex",
+            alignItems: "center",
+            gap: "15px",
+            background: "rgba(34, 211, 238, 0.1)",
+            padding: "15px 25px",
+            borderRadius: "8px",
+            border: "1px solid #22D3EE",
+            width: "fit-content",
           }}
         >
-          VIEW FULL RESUME
+          <span
+            style={{ color: "white", fontSize: "20px", fontWeight: "bold" }}
+          >
+            DOWNLOAD_CV.sh
+          </span>
+          <div
+            style={{
+              width: "10px",
+              height: "20px",
+              background: "#22D3EE",
+              animationName: "pulse",
+              opacity: 0.8,
+            }}
+          />
         </div>
       </div>
 
-      {/* Footer URL */}
+      {/* 5. FOOTER URL */}
       <div
         style={{
           position: "absolute",
-          bottom: "60px",
-          fontSize: 20,
-          color: "rgba(148, 163, 184, 0.5)",
+          bottom: "50px",
+          left: "80px",
+          display: "flex",
+          color: "rgba(255,255,255,0.2)",
+          fontSize: "18px",
           fontFamily: "monospace",
         }}
       >
-        thissidemayur.me/resume
+        thissidemayur.me/resume 
       </div>
     </div>,
     { ...size },
