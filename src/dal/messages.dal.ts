@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import { IMsg } from "@/types/database";
+import { cacheTag } from "next/cache";
 
 // get all messages
 export async function getMessages() {
@@ -46,6 +47,8 @@ export async function deleteMessage(id: number) {
 }
 
 export async function getMessagesStats() {
+  'use cache'
+  cacheTag("count-messages")
   try {
     const sql = `
             SELECT 

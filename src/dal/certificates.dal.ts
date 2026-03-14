@@ -144,6 +144,8 @@ export async function getPublicFeaturedCertificates(): Promise<iCertificate[]> {
 }
 
 export async function getCertificatesCount(): Promise<number> {
+    "use cache";
+    cacheTag("count-certificates");
   try {
     const { rows } = await query("SELECT COUNT(*) FROM certificates");
     return parseInt(rows[0].count);

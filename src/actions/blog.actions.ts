@@ -11,7 +11,7 @@ export async function createBlogAction(
     const result = await addNewBlog(blogData);
 
     revalidateTag("blogs", "max");
-
+    revalidateTag("blogs-count","max");
     revalidatePath("/");
     revalidatePath("/blogs");
 
@@ -29,6 +29,8 @@ export async function deleteBlogAction(id: number) {
     if (blog) {
       revalidateTag("blogs", "max");
       revalidateTag(`blog-${blog.slug}`, "max");
+      revalidateTag("blogs-count", "max");
+
     }
 
     revalidatePath("/blogs");
@@ -47,6 +49,7 @@ export async function updateBlogAction(id: number, data: Partial<iBlog>) {
 
     revalidateTag("blogs", "max");
     revalidateTag(`blog-${blog.slug}`, "max");
+    revalidateTag("blogs-count", "max");
 
     revalidatePath("/blogs");
     revalidatePath(`/blogs/${blog.slug}`);

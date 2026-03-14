@@ -190,6 +190,8 @@ export const getPublicProjectBySlug = async (slug: string) => {
 };
 
 export async function getProjectStats() {
+  'use cache'
+  cacheTag("count-projects")
   try {
     const sql = `
             SELECT 

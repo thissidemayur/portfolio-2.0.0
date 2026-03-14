@@ -10,6 +10,7 @@ export async function toggleHomeVisibility(id: number, currentState: boolean) {
     await updateCertificate(id, { show_on_home: !currentState });
 
     revalidateTag("certificates", "max");
+    revalidateTag("count-certificates","max");
     revalidatePath("/");
     revalidatePath("/certificates");
    
@@ -27,6 +28,7 @@ export async function removeCertAction(id: number) {
     await deleteCertificate(id);
 
     revalidateTag("certificates", "max");
+    revalidateTag("count-certificates", "max");
 
     revalidatePath("/");
     revalidatePath("/certificates");
@@ -54,6 +56,7 @@ export async function updateCertAction(
     await updateCertificate(id, formattedData);
 
     revalidateTag("certificates", "max");
+    revalidateTag("count-certificates", "max");
 
     revalidatePath("/");
     revalidatePath("/certificates");
@@ -82,6 +85,7 @@ export async function createCertAction(data: Omit<iCertificate,'id'>) {
     await createCertificate(formattedData);
 
     revalidateTag("certificates","max")
+    revalidateTag("count-certificates", "max");
 
     revalidatePath("/")
     revalidatePath("/certificates")

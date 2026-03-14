@@ -144,3 +144,16 @@ export const getBlogStats = async () => {
   }
 };
 
+export const getPublicBlogBySlug = async (slug: string) => {
+  "use cache";
+  cacheTag(`blog-${slug}`, "blogs"); // Specific tag for this blog and a general tag
+
+  try {
+    const sql = `SELECT * FROM blogs WHERE slug = $1`;
+    const { rows } = await query(sql, [slug]);
+    return rows[0] || null;
+  } catch (error) {
+    console.error(`DAL_ERROR: Failed to fetch public blog [${slug}]`, error);
+    return null;
+  }
+};

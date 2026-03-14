@@ -9,6 +9,7 @@ export async function deleteProjectAction(id: number) {
   try {
     const project = await deleteProject(id);
     revalidateTag("projects","max")
+    revalidateTag("count-projects","max");
     revalidateTag(`project-${project.slug}`,"max")
     revalidatePath("/projects"); 
     revalidatePath(`/projects/${project.slug}`)
@@ -27,6 +28,8 @@ export async function createProjectAction(
   try {
     const projectId = await createProject(details, techIds);
      revalidateTag("projects", "max");
+         revalidateTag("count-projects", "max");
+
      revalidatePath("/projects");
      revalidatePath("/");
     return { success: true, id: projectId };
@@ -43,6 +46,8 @@ export async function updateProjectAction(
 ) {
   try {
     await updateProjectDetails(id, { ...data, techIds });
+        revalidateTag("count-projects", "max");
+
      revalidateTag("projects", "max");
      revalidateTag(`project-${data.slug}`, "max");
      revalidatePath("/projects");
