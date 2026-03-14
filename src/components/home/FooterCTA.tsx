@@ -38,7 +38,7 @@ export default function FooterCTA() {
               <div className="w-2 h-2 bg-black group-hover:bg-white rounded-full" />
             </a>
 
-            {/* Subtle Ghost Button */}
+            {/* Subtle Ghost B  utton */}
             <a
               href="/contact"
               className="px-8 py-4 bg-transparent border border-white/10 text-white/50 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-white hover:text-white transition-all duration-300"
